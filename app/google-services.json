@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "662511440065",
+    "firebase_url": "https://marshall-jarvis.firebaseio.com",
+    "project_id": "marshall-jarvis",
+    "storage_bucket": "marshall-jarvis.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:662511440065:android:61097213d739e8e2",
+        "android_client_info": {
+          "package_name": "com.jarvis.marshall"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "662511440065-u3sp8a8kilcqss0u54ra86bknpk4cudp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jarvis.marshall",
+            "certificate_hash": "5844178e1ba581c787a694ff93427c8937314c6d"
+          }
+        },
+        {
+          "client_id": "662511440065-3i7blnne5q231tgq6g66qhja6lajd4cm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnEH97xKEgNuB-Mcg6QGLqVpCfmhah5zk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "662511440065-3i7blnne5q231tgq6g66qhja6lajd4cm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
