@@ -7,12 +7,11 @@ import java.util.ArrayList;
  */
 
 public class User {
-    private String key,name,username;
+    private String key,name;
     private ArrayList<String> groupList;
-    public User(String key, String name,String username) {
+    public User(String key, String name) {
         this.key = key;
         this.name = name;
-        this.username = username;
     }
 
     public String getKey() {
@@ -21,7 +20,6 @@ public class User {
     public String getName() {
         return name;
     }
-    public String getUsername() { return username; }
     public ArrayList<String> getGroupList() { return groupList; }
     public void setGroupList(ArrayList<String> groupList) { this.groupList=groupList; }
 }

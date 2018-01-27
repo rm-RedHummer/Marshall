@@ -8,11 +8,13 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -31,85 +33,22 @@ import com.jarvis.marshall.dataAccess.GroupDA;
 import com.jarvis.marshall.dataAccess.UserDA;
 import com.jarvis.marshall.model.Group;
 import com.jarvis.marshall.view.home.HomeAdapter;
+import com.jarvis.marshall.view.home.groups.HomeFragment;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private FirebaseAuth mAuth;
-    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mAuth = FirebaseAuth.getInstance();
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        mAuth = FirebaseAuth.getInstance();
-        final GroupDA groupDA = new GroupDA();
-        final UserDA userDA = new UserDA();
-
-        /*recyclerView = findViewById(R.id.recyclerview_home);
-        recyclerView.setHasFixedSize(true);
-        LinearLayoutManager llm = new LinearLayoutManager(getParent());
-        llm.setOrientation(LinearLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(llm);*/
-        //loadRecyclerView();
-
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                LayoutInflater inflater = MainActivity.this.getLayoutInflater();
-                final View view2 = inflater.inflate(R.layout.dialog_add_group,null);
-                final AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
-                        .setView(view2)
-                        .setTitle("Enter the name of the group")
-                        .setPositiveButton("Confirm", null) //Set to null. We override the onclick
-                        .setNegativeButton("Cancel", null)
-                        .create();
-
-                dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-
-                    @Override
-                    public void onShow(final DialogInterface dialog) {
-
-                        Button b = ((AlertDialog)dialog).getButton(AlertDialog.BUTTON_POSITIVE);
-                        b.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(final View view) {
-                                final EditText groupName = view2.findViewById(R.id.editText_group_name);
-                                groupDA.checkGroupNames(groupName.getText().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        if (dataSnapshot.getValue() != null) {
-                                            Snackbar.make(view, "The group name is already taken.", Snackbar.LENGTH_LONG)
-                                                    .setAction("Action", null).show();
-                                        } else {
-                                            ArrayList<String> groupMembers = new ArrayList<>();
-                                            groupMembers.add(mAuth.getCurrentUser().getUid());
-
-                                            Group group = new Group(groupName.getText().toString(),groupMembers);
-                                            groupDA.createNewGroup(group);
-                                            dialog.dismiss();
-
-                                            Snackbar.make(view, "The group is successfully created.", Snackbar.LENGTH_LONG)
-                                                    .setAction("Action", null).show();
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-
-                                    }
-                                });
-                            }
-                        });
-                    }
-                });
-                dialog.show();
-            }
-        });
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -119,6 +58,10 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        /*FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.main_framelayout, new HomeFragment());
+        ft.commit();*/
     }
 
     public Context getAppContext() {
@@ -185,7 +128,9 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_group) {
-
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.main_framelayout, new HomeFragment());
+            ft.commit();
         } else if (id == R.id.nav_settings) {
 
         }
@@ -195,11 +140,5 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    /*public void loadRecyclerView() {
-        final ArrayList<Group> groupArrayList = new ArrayList<>();
-        final HomeAdapter homeAdapter = new HomeAdapter();
-        recyclerView.setAdapter(homeAdapter);
 
-        //GroupDA groupDA
-    }*/
 }

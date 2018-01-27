@@ -35,7 +35,6 @@ public class SignupActivity extends AppCompatActivity {
 
     @BindView(R.id.input_name) EditText nameText;
     @BindView(R.id.input_email) EditText emailText;
-    @BindView(R.id.input_username) EditText usernameText;
     @BindView(R.id.input_password) EditText passwordText;
     @BindView(R.id.btn_signup) Button signupButton;
     @BindView(R.id.link_login) TextView loginLink;
@@ -83,7 +82,6 @@ public class SignupActivity extends AppCompatActivity {
             progressDialog.show();
 
             final String name = nameText.getText().toString();
-            final String username = usernameText.getText().toString();
             String email = emailText.getText().toString();
             String password = passwordText.getText().toString();
 
@@ -101,7 +99,7 @@ public class SignupActivity extends AppCompatActivity {
 
                             if (task.isSuccessful()) {
                                 // Sign in success, update UI with the signed-in user's information
-                                onSignupSuccess(name,username);
+                                onSignupSuccess(name);
                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                 startActivity(intent);
                                 //updateUI(user);
@@ -133,8 +131,8 @@ public class SignupActivity extends AppCompatActivity {
     }
 
 
-    public void onSignupSuccess(String name,String username) {
-        User user = new User(mAuth.getCurrentUser().getUid(),name,username);
+    public void onSignupSuccess(String name) {
+        User user = new User(mAuth.getCurrentUser().getUid(),name);
         userDA.createNewUser(user);
         signupButton.setEnabled(true);
         setResult(RESULT_OK, null);
@@ -147,56 +145,16 @@ public class SignupActivity extends AppCompatActivity {
         signupButton.setEnabled(true);
     }
 
-    public boolean checkUsername(String username) {
-        usernameText.setTag("false");
-        userDA.checkUsername(username).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
 
-                if(dataSnapshot.getValue() != null) {
-                    usernameText.setError("Username is already taken");
-
-                    /*User user = dataSnapshot.getValue(User.class);
-                    if(usernameText.getText().toString().toLowerCase().equals(user.getUsername().toLowerCase())){
-                        usernameText.setError("Username is already taken");
-                        usernameText.setTag("false");
-                    } else {
-                        Toast.makeText(getBaseContext(), "pumasok sa else", Toast.LENGTH_LONG).show();
-                        usernameText.setError(null);
-                    }*/
-
-                } else if(dataSnapshot.getValue() == null){
-                    usernameText.setError(null);
-                    usernameText.setTag("true");
-                    Snackbar.make(findViewById(R.id.signup_scrollview), usernameText.getTag().toString(), Snackbar.LENGTH_SHORT)
-                            .setAction("Action", null).show();
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(getBaseContext(), databaseError.toString(), Toast.LENGTH_LONG).show();
-            }
-        });
-        Toast.makeText(getBaseContext(), usernameText.getTag().toString(), Toast.LENGTH_LONG).show();
-        return false;
-    }
 
     public boolean validate() {
         boolean valid = true;
         String name = nameText.getText().toString();
         String email = emailText.getText().toString();
         String password = passwordText.getText().toString();
-        String username = usernameText.getText().toString();
+
 
         //usernameText.setTag("true");
-
-        if(username.isEmpty() || username.length() < 6 ) {
-            usernameText.setError("at least 6 characters");
-            valid = false;
-        } else {
-            //valid=checkUsername(username);
-            usernameText.setError(null);
-        }
 
         if (name.isEmpty() || name.length() < 6) {
             nameText.setError("at least 6 characters");

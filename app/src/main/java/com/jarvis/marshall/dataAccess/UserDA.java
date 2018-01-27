@@ -16,8 +16,4 @@ public class UserDA extends DA {
     public void createNewUser(User user){
         rootRef.child(node).child(user.getKey()).setValue(user);
     }
-
-    public Query checkUsername(String username){
-        return rootRef.child(node).orderByChild("username").equalTo(username);
-    }
 }

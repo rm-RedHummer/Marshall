@@ -21,6 +21,7 @@ public class Group {
     }
     public ArrayList<String> getGroupMembers() { return groupMembers; }
     public String getGroupCode() { return groupCode; }
+
     public void setGroupCode(String groupCode) { this.groupCode = groupCode ; }
     public void setKey(String key){
         this.key=key;
