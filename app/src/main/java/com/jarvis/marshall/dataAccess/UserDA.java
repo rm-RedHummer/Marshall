@@ -16,4 +16,10 @@ public class UserDA extends DA {
     public void createNewUser(User user){
         rootRef.child(node).child(user.getKey()).setValue(user);
     }
+    public Query getGroupList(String key){
+        return rootRef.child(node).child(key).child("groupList");
+    }
+    public void setGroupList(String key,ArrayList<String> groupList){
+        rootRef.child(node).child(key).child("groupList").setValue(groupList);
+    }
 }

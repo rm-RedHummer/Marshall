@@ -25,6 +25,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.jarvis.marshall.dataAccess.UserDA;
 import com.jarvis.marshall.model.User;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 

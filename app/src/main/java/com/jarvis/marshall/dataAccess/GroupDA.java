@@ -17,25 +17,12 @@ import java.util.ArrayList;
 public class GroupDA extends DA{
     private final String node = "group";
     public void createNewGroup(Group group){
-        String id = rootRef.child(node).push().getKey();
-        group.setKey(id);
-        String groupCode = id.substring(id.length()-7,id.length()-1);
-        checkGroupCode(groupCode).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue() != null) { // kapag meron
-
-                } else {
-
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        //String groupCode = id.substring(id.length()-7,id.length()-1);
         rootRef.child(node).child(group.getKey()).setValue(group);
+    }
+
+    public void deleteGroup(String key) {
+        rootRef.child(node).child(key).removeValue();
     }
 
     public Query checkGroupCode(String groupCode) {
