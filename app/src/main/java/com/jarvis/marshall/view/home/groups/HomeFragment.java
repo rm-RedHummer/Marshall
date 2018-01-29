@@ -183,7 +183,91 @@ public class HomeFragment extends Fragment {
         final HomeAdapter adapter = new HomeAdapter(getContext(),groupArrayList,progressDialog);
         recyclerView.setAdapter(adapter);
 
-        groupDA.getAllGroups().addChildEventListener(new ChildEventListener() {
+
+        /*groupDA.getGroup("-L42zg_rezrn-RvkyREk").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue()==null){
+                    AlertDialog.Builder dg = new AlertDialog.Builder(getContext());
+                    dg.setMessage("Wala daw laman");
+                    dg.show();
+                } else {
+                    AlertDialog.Builder dg = new AlertDialog.Builder(getContext());
+                    dg.setMessage(dataSnapshot.getValue().toString());
+                    dg.show();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });*/
+
+
+
+        userDA.getGroupList(mAuth.getCurrentUser().getUid().toString()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<String> groupList = (ArrayList<String>) dataSnapshot.getValue();
+                for (int ctr = 0 ; ctr < groupList.size() ; ctr++){
+
+                    groupDA.getGroup(groupList.get(ctr)).addChildEventListener(new ChildEventListener() {
+                        int num = 1;
+                        String key,groupName = null,groupCode=null;
+                        ArrayList<String> groupMembers = new ArrayList<>();
+                        @Override
+                        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                            if (num == 1)
+                                groupCode = dataSnapshot.getValue().toString();
+                            else if (num == 2)
+                                groupMembers = (ArrayList<String>) dataSnapshot.getValue();
+                            else if (num == 3)
+                                groupName = dataSnapshot.getValue().toString();
+                            else if (num == 4) {
+                                key = dataSnapshot.getValue().toString();
+                                Group group = new Group(groupName, groupMembers);
+                                group.setKey(key);
+                                group.setGroupCode(groupCode);
+                                groupArrayList.add(group);
+                                adapter.notifyItemInserted(groupArrayList.size() - 1);
+                            }
+                            if (num < 5)
+                                num++;
+                            else
+                                num = 1;
+                        }
+
+                        @Override
+                        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                        }
+
+                        @Override
+                        public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                        }
+
+                        @Override
+                        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        /*groupDA.getAllGroups().addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 int ctr = 1;
@@ -210,27 +294,19 @@ public class HomeFragment extends Fragment {
                         ctr = 1;
                 }
             }
-
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
             }
-
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-
             }
-
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.w("Get group Error", "loadPost:onCancelled", databaseError.toException());
             }
-        });
+        });*/
 
         recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(),
                 recyclerView, new RecyclerItemClickListener.OnItemClickListener() {

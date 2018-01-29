@@ -33,9 +33,9 @@ public class GroupDA extends DA{
         return rootRef.child(node).orderByChild("groupName").equalTo(groupName);
     }
 
-    /*public Query getGroupList(String key){
-        return rootRef.child(node).child("groupMembers")..orderByValue().equalTo(key);
-    }*/
+    public Query getGroupList(String key){
+        return rootRef.child(node).orderByChild("groupMembers");
+    }
 
     public Query getAllGroups(){
         return rootRef.child(node).orderByKey();
