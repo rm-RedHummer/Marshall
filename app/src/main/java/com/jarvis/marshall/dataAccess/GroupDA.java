@@ -32,4 +32,16 @@ public class GroupDA extends DA{
     public Query checkGroupNames(String groupName) {
         return rootRef.child(node).orderByChild("groupName").equalTo(groupName);
     }
+
+    /*public Query getGroupList(String key){
+        return rootRef.child(node).child("groupMembers")..orderByValue().equalTo(key);
+    }*/
+
+    public Query getAllGroups(){
+        return rootRef.child(node).orderByKey();
+    }
+
+    public Query getGroup(String key){
+        return rootRef.child(node).child(key).orderByKey();
+    }
 }
