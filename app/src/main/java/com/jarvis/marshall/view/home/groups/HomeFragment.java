@@ -183,29 +183,6 @@ public class HomeFragment extends Fragment {
         final HomeAdapter adapter = new HomeAdapter(getContext(),groupArrayList,progressDialog);
         recyclerView.setAdapter(adapter);
 
-
-        /*groupDA.getGroup("-L42zg_rezrn-RvkyREk").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getValue()==null){
-                    AlertDialog.Builder dg = new AlertDialog.Builder(getContext());
-                    dg.setMessage("Wala daw laman");
-                    dg.show();
-                } else {
-                    AlertDialog.Builder dg = new AlertDialog.Builder(getContext());
-                    dg.setMessage(dataSnapshot.getValue().toString());
-                    dg.show();
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });*/
-
-
-
         userDA.getGroupList(mAuth.getCurrentUser().getUid().toString()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -267,6 +244,21 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(),
+                recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                AlertDialog.Builder dg = new AlertDialog.Builder(getContext());
+                dg.setMessage(groupArrayList.get(position).getGroupName());
+                dg.show();
+            }
+
+            @Override
+            public void onLongItemClick(View view, int position) {
+
+            }
+        }));
+
         /*groupDA.getAllGroups().addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -305,139 +297,6 @@ public class HomeFragment extends Fragment {
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
-            }
-        });*/
-
-        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(),
-                recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                AlertDialog.Builder dg = new AlertDialog.Builder(getContext());
-                dg.setMessage(groupArrayList.get(position).getGroupName());
-                dg.show();
-            }
-
-            @Override
-            public void onLongItemClick(View view, int position) {
-
-            }
-        }));
-        /*groupDA.getAllGroups().addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getValue()==null){
-                    AlertDialog.Builder dg = new AlertDialog.Builder(getContext());
-                    dg.setMessage("Wala daw laman");
-                    dg.show();
-                } else {
-                    Long val = dataSnapshot.getChildrenCount();
-                    AlertDialog.Builder dg = new AlertDialog.Builder(getContext());
-                    dg.setMessage(String.valueOf(val));
-                    dg.show();
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });*/
-
-
-        /*groupDA.getGroupList(mAuth.getCurrentUser().getUid().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getValue()!=null){
-                    AlertDialog.Builder dg = new AlertDialog.Builder(getContext());
-                    dg.setMessage("May laman");
-                    dg.show();
-                } else {
-                    AlertDialog.Builder dg = new AlertDialog.Builder(getContext());
-                    dg.setMessage("Walang laman huhubels");
-                    dg.show();
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });*/
-        /*groupDA.getGroup("-L3xathh_XdzXzO0ly6r").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getValue()!=null){
-                    //Group group = dataSnapshot.getValue(Group.class);
-                    Long val = dataSnapshot.getChildrenCount();
-                    AlertDialog.Builder dg = new AlertDialog.Builder(getContext());
-                    dg.setMessage(String.valueOf(val));
-                    dg.show();
-                } else {
-                    AlertDialog.Builder dg = new AlertDialog.Builder(getContext());
-                    dg.setMessage("Walang laman");
-                    dg.show();
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        }); */
-
-        /*userDA.getGroupList(mAuth.getCurrentUser().getUid().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getValue()!=null){
-                    groupList[0] = (ArrayList<String>) dataSnapshot.getValue();
-                    AlertDialog.Builder dg = new AlertDialog.Builder(getContext());
-                    dg.setMessage("Yeah");
-                    dg.show();
-                    for(int ctr = 0 ; ctr < groupList[0].size(); ctr++) {
-                        groupDA.getGroup(groupList[0].get(ctr)).addChildEventListener(new ChildEventListener() {
-                            @Override
-                            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                                if(dataSnapshot.getValue()!=null){
-                                    Group group = dataSnapshot.getValue(Group.class);
-                                    groupArrayList.add(group);
-                                    adapter.notifyItemInserted(groupArrayList.size()-1);
-
-                                    AlertDialog.Builder dg2 = new AlertDialog.Builder(getContext());
-                                    dg2.setMessage(group.getGroupName());
-                                    dg2.show();
-
-                                }
-                            }
-
-                            @Override
-                            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-                            }
-
-                            @Override
-                            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-                            }
-
-                            @Override
-                            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
-                    }
-
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
             }
         });*/
     }
