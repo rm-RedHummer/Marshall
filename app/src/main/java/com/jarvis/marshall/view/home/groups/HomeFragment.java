@@ -51,7 +51,6 @@ public class HomeFragment extends Fragment {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -214,34 +213,19 @@ public class HomeFragment extends Fragment {
                             else
                                 num = 1;
                         }
-
                         @Override
-                        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-                        }
-
+                        public void onChildChanged(DataSnapshot dataSnapshot, String s) {                        }
                         @Override
-                        public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-                        }
-
+                        public void onChildRemoved(DataSnapshot dataSnapshot) {                        }
                         @Override
-                        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                        }
-
+                        public void onChildMoved(DataSnapshot dataSnapshot, String s) {                        }
                         @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
+                        public void onCancelled(DatabaseError databaseError) {                        }
                     });
                 }
             }
-
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
+            public void onCancelled(DatabaseError databaseError) {            }
         });
 
         recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(),
@@ -258,46 +242,5 @@ public class HomeFragment extends Fragment {
 
             }
         }));
-
-        /*groupDA.getAllGroups().addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                int ctr = 1;
-                String key,groupName = null,groupCode=null;
-                ArrayList<String> groupMembers = new ArrayList<>();
-                for(DataSnapshot ds : dataSnapshot.getChildren()) {
-                    if (ctr == 1)
-                        groupCode = ds.getValue().toString();
-                    else if (ctr == 2)
-                        groupMembers = (ArrayList<String>) ds.getValue();
-                    else if (ctr == 3)
-                        groupName = ds.getValue().toString();
-                    else if (ctr == 4) {
-                        key = ds.getValue().toString();
-                        Group group = new Group(groupName, groupMembers);
-                        group.setKey(key);
-                        group.setGroupCode(groupCode);
-                        groupArrayList.add(group);
-                        adapter.notifyItemInserted(groupArrayList.size() - 1);
-                    }
-                    if (ctr < 5)
-                        ctr++;
-                    else
-                        ctr = 1;
-                }
-            }
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-            }
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-            }
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });*/
     }
 }
