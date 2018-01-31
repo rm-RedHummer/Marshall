@@ -9,9 +9,10 @@ import java.util.ArrayList;
 public class Group {
     private String key,groupName,groupCode;
     private ArrayList<String> groupMembers;
-    public Group(String groupName,ArrayList<String> groupMembers) {
+    public Group(String groupName, String key, String groupCode) {
         this.groupName = groupName;
-        this.groupMembers = groupMembers;
+        this.key = key;
+        this.groupCode = groupCode;
     }
     public String getGroupName(){
         return groupName;
@@ -19,11 +20,14 @@ public class Group {
     public String getKey(){
         return key;
     }
-    public ArrayList<String> getGroupMembers() { return groupMembers; }
     public String getGroupCode() { return groupCode; }
+    public ArrayList<String> getGroupMembers() { return groupMembers; }
+
     public void setGroupName(String groupName) { this.groupName = groupName ; }
     public void setGroupCode(String groupCode) { this.groupCode = groupCode ; }
     public void setKey(String key){
         this.key=key;
     }
+    public void setGroupMembers(ArrayList<String> groupMembers) { this.groupMembers = groupMembers; }
+
 }

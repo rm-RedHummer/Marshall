@@ -51,28 +51,29 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
         final Group group = groupList.get(position);
         //holder.groupName.setText(group.getGroupName());
         //holder.numOfMembers.setText(String.valueOf(group.getGroupMembers().size())+" Members");
-        groupDA.getAllGroups().addListenerForSingleValueEvent(new ValueEventListener() {
+        groupDA.getGroup(group.getKey()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 int ctr = 1;
                 ArrayList<String> groupMembers;
                 String groupName;
-                for(DataSnapshot ds:dataSnapshot.child(group.getKey()).getChildren()){
+                for(DataSnapshot ds: dataSnapshot.getChildren()){
                     if (ctr == 2) {
-                        groupMembers = (ArrayList<String>) ds.getValue();
-                        holder.numOfMembers.setText(String.valueOf(groupMembers.size()) + " Joined");
+                        int numOfMembers = (int) ds.getChildrenCount();
+                        holder.numOfMembers.setText(String.valueOf(numOfMembers) + " Joined");
                     }
                     else if (ctr == 3)
                         holder.groupName.setText(ds.getValue().toString());
-
                     if (ctr < 5)
                         ctr++;
                     else
                         ctr = 1;
                 }
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
+
             }
         });
         progressDialog.dismiss();

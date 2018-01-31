@@ -33,10 +33,6 @@ public class GroupDA extends DA{
         return rootRef.child(node).orderByChild("groupName").equalTo(groupName);
     }
 
-    public Query getGroupList(String key){
-        return rootRef.child(node).orderByChild("groupMembers");
-    }
-
     public Query getAllGroups(){
         return rootRef.child(node).orderByKey();
     }
@@ -44,4 +40,13 @@ public class GroupDA extends DA{
     public Query getGroup(String key){
         return rootRef.child(node).child(key).orderByKey();
     }
+
+    public Query getGroupByCode(String groupCode){
+        return rootRef.child(node).orderByChild("groupCode").equalTo(groupCode);
+    }
+
+    public void addUserToGroup(final String userKey,String groupKey){
+        rootRef.child(node).child(groupKey).child("groupMembers").child(userKey).setValue("true");
+    }
+
 }

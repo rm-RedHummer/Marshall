@@ -16,10 +16,10 @@ public class UserDA extends DA {
     public void createNewUser(User user){
         rootRef.child(node).child(user.getKey()).setValue(user);
     }
-    public Query getGroupList(String key){
-        return rootRef.child(node).child(key).child("groupList");
+    public void addGroup(String key, String groupKey){
+        rootRef.child(node).child(key).child("userGroup").child(groupKey).setValue("true");
     }
-    public void setGroupList(String key,ArrayList<String> groupList){
-        rootRef.child(node).child(key).child("groupList").setValue(groupList);
+    public Query getGroups(String key){
+        return rootRef.child(node).child(key).child("userGroup");
     }
 }
