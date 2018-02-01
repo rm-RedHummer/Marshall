@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -34,6 +35,7 @@ public class SignupActivity extends AppCompatActivity {
     private static final String TAG = "SignupActivity";
     private FirebaseAuth mAuth;
     private UserDA userDA;
+    private FirebaseAuth.AuthStateListener mAuthListener;
 
     @BindView(R.id.input_name) EditText nameText;
     @BindView(R.id.input_email) EditText emailText;
@@ -78,7 +80,7 @@ public class SignupActivity extends AppCompatActivity {
             signupButton.setEnabled(false);
 
             final ProgressDialog progressDialog = new ProgressDialog(SignupActivity.this,
-                    R.style.AppTheme_Dark_Dialog);
+                    R.style.AppTheme_Dialog);
             progressDialog.setIndeterminate(true);
             progressDialog.setMessage("Creating Account...");
             progressDialog.show();
@@ -92,8 +94,6 @@ public class SignupActivity extends AppCompatActivity {
             // TODO: Implement your own signup logic here.
             final AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
             builder1.setCancelable(true);
-
-
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -101,9 +101,8 @@ public class SignupActivity extends AppCompatActivity {
 
                             if (task.isSuccessful()) {
                                 // Sign in success, update UI with the signed-in user's information
-                                onSignupSuccess(name);
-                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                startActivity(intent);
+                                onSignupSuccess(name,progressDialog);
+
                                 //updateUI(user);
                             } else {
                                 // If sign in fails, display a message to the user.
@@ -117,30 +116,37 @@ public class SignupActivity extends AppCompatActivity {
                             // ...
                         }
                     });
-
-
-            new android.os.Handler().postDelayed(
-                    new Runnable() {
-                        public void run() {
-                            // On complete call either onSignupSuccess or onSignupFailed
-                            // depending on success
-                            // onSignupFailed();
-
-                            progressDialog.dismiss();
-                        }
-                    }, 1000);
-
     }
 
 
-    public void onSignupSuccess(String name) {
+    public void onSignupSuccess(final String name,ProgressDialog progressDialog) {
+        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setDisplayName(name).build();
+        firebaseUser.updateProfile(profileUpdates);
         User user = new User(mAuth.getCurrentUser().getUid(),name);
         userDA.createNewUser(user);
         signupButton.setEnabled(true);
         setResult(RESULT_OK, null);
+        progressDialog.dismiss();
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
         finish();
-
     }
+
+    /*@Override
+    public void onStop(){
+        super.onStop();
+        if(mAuthListener != null){
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        mAuth.addAuthStateListener(mAuthListener);
+    }*/
 
     public void onSignupFailed() {
         //Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();

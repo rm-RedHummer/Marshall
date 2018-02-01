@@ -6,7 +6,7 @@
 
     <item
         android:id="@+id/nav_group"
-        android:icon="@drawable/ic_menu_gallery"
+        android:icon="@drawable/ic_group_black_24dp"
         android:iconTint="@color/common_google_signin_btn_text_dark_focused"
         android:iconTintMode="multiply"
         android:title="Groups" />
@@ -20,7 +20,7 @@
                 android:title="Settings" />
             <item
                 android:id="@+id/nav_logout"
-                android:icon="@drawable/ic_menu_share"
+                android:icon="@drawable/ic_directions_walk_black_24dp"
                 android:title="Logout" />
         </menu>
     </item>

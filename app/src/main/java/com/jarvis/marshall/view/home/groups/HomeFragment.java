@@ -107,10 +107,9 @@ public class HomeFragment extends Fragment {
         */
 
         final ProgressDialog progressDialog = new ProgressDialog(getContext(),
-                R.style.AppTheme_Dark_Dialog);
-        progressDialog.setIndeterminate(true);
+                R.style.AppTheme_Dialog);
         progressDialog.show();
-
+        progressDialog.setMessage("Loading groups..");
 
         final ArrayList<Group> groupArrayList = new ArrayList<>();
         final HomeAdapter adapter = new HomeAdapter(getContext(),groupArrayList,progressDialog);

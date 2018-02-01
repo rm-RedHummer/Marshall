@@ -23,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -59,14 +60,22 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        /*FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        View header = navigationView.getHeaderView(0);
+        TextView name = header.findViewById(R.id.nav_header_name);
+        name.setText(mAuth.getCurrentUser().getDisplayName());
+        TextView email = header.findViewById(R.id.nav_header_email);
+        email.setText(mAuth.getCurrentUser().getEmail());
+
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.main_framelayout, new HomeFragment());
-        ft.commit();*/
+        ft.commit();
     }
 
     public Context getAppContext() {
         return getBaseContext();
     }
+
+
 
     @Override
     public void onBackPressed() {
@@ -80,8 +89,7 @@ public class MainActivity extends AppCompatActivity
             dg.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    finish();
-                    System.exit(0);
+                    moveTaskToBack(true);
                 }
             });
             dg.setNegativeButton("No", new DialogInterface.OnClickListener() {
