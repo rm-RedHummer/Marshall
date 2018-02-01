@@ -122,16 +122,13 @@ public class HomeFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.getValue()!=null){
-
                     int numOfChildren = (int) dataSnapshot.getChildrenCount();
                     int num=1;
                     if(groupArrayList.size()==0){
-
                         for(DataSnapshot ds: dataSnapshot.getChildren()){
                             loadToRecyclerView(ds,adapter,groupArrayList);
                         }
                     } else {
-
                         for(DataSnapshot ds: dataSnapshot.getChildren()){
                             if(num==numOfChildren)
                                 loadToRecyclerView(ds,adapter,groupArrayList);
