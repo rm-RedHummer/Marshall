@@ -145,7 +145,7 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(),
+        /*recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(),
                 recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -158,7 +158,7 @@ public class HomeFragment extends Fragment {
             public void onLongItemClick(View view, int position) {
 
             }
-        }));
+        }));*/
     }
 
     public void loadToRecyclerView(DataSnapshot ds, final HomeAdapter adapter, final ArrayList<Group>

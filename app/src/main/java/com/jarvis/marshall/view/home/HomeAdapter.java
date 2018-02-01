@@ -60,6 +60,24 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
         final Group group = groupList.get(position);
         viewBinderHelper.bind(holder.swipeRevealLayout,group.getKey());
 
+        holder.constraintLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder dg = new AlertDialog.Builder(context);
+                dg.setMessage(group.getGroupName());
+                dg.show();
+            }
+        });
+
+        holder.editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder dg = new AlertDialog.Builder(context);
+                dg.setMessage("Edit is clicked");
+                dg.show();
+            }
+        });
+
         holder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -93,10 +111,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
 
             }
         });
-
         final int  width = Resources.getSystem().getDisplayMetrics().widthPixels;
-
-
         holder.constraintLayout.post(new Runnable() {
             @Override
             public void run() {
@@ -122,6 +137,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
         private Button deleteButton,editButton;
         private ConstraintLayout constraintLayout;
         private CardView cardView;
+        private View.OnClickListener clickListener;
         public ListHolder(View itemView) {
             super(itemView);
             groupName = itemView.findViewById(R.id.vh_groups_title);
@@ -131,7 +147,21 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
             editButton = itemView.findViewById(R.id.vh_group_edit_btn);
             constraintLayout = itemView.findViewById(R.id.constraint_slide);
             cardView = itemView.findViewById(R.id.vh_group_cardview);
-
         }
+        /*@Override
+        public void onClick(View view){
+            groupClickedListener.onGroupClicked(getAdapterPosition());
+            AlertDialog.Builder dg = new AlertDialog.Builder(context);
+                    dg.setMessage("pinindot");
+                    dg.show();
+        }*/
+    }
+
+    public interface OnGroupClickedListener {
+        void onGroupClicked(int position);
+    }
+    private OnGroupClickedListener groupClickedListener;
+    public void setGroupClickedListener(OnGroupClickedListener groupClickedListener){
+        this.groupClickedListener = groupClickedListener;
     }
 }
