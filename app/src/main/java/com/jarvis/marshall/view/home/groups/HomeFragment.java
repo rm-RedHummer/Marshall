@@ -6,10 +6,12 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,15 +27,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.jarvis.marshall.LoginActivity;
 import com.jarvis.marshall.MainActivity;
 import com.jarvis.marshall.R;
-import com.jarvis.marshall.Util.RecyclerItemClickListener;
-import com.jarvis.marshall.dataAccess.DA;
 import com.jarvis.marshall.dataAccess.GroupDA;
 import com.jarvis.marshall.dataAccess.UserDA;
 import com.jarvis.marshall.model.Group;
 import com.jarvis.marshall.view.home.HomeAdapter;
+import com.jarvis.marshall.view.home.eventsList.EventsListFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +61,9 @@ public class HomeFragment extends Fragment {
         groupDA = new GroupDA();
         userDA = new UserDA();
         ButterKnife.bind(getActivity());
+
+        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+        toolbar.setTitle("Groups");
 
         recyclerView = view.findViewById(R.id.recyclerview_home);
         recyclerView.setHasFixedSize(true);

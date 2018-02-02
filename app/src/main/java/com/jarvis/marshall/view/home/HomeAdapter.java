@@ -1,10 +1,13 @@
 package com.jarvis.marshall.view.home;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
+import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
-import android.support.constraint.ConstraintSet;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -20,9 +23,12 @@ import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.jarvis.marshall.MainActivity;
 import com.jarvis.marshall.R;
 import com.jarvis.marshall.dataAccess.GroupDA;
 import com.jarvis.marshall.model.Group;
+import com.jarvis.marshall.view.home.eventsList.EventsListFragment;
+import com.jarvis.marshall.view.home.groups.HomeFragment;
 
 import java.util.ArrayList;
 
@@ -63,9 +69,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
         holder.constraintLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder dg = new AlertDialog.Builder(context);
-                dg.setMessage(group.getGroupName());
-                dg.show();
+                viewEventsList(group.getKey());
             }
         });
 
@@ -122,10 +126,20 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
                 //holder.constraintLayout.setMinWidth(width);
             }
         });
-        //int maxWidth = holder.constraintLayout.getMaxWidth();
-        //holder.constraintLayout.setMinimumWidth(maxWidth);
-
         progressDialog.dismiss();
+    }
+
+    public void viewEventsList(String groupKey){
+        MainActivity mainActivity = (MainActivity) context;
+        EventsListFragment eventsListFragment = new EventsListFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("groupKey",groupKey);
+        eventsListFragment.setArguments(bundle);
+
+        FragmentTransaction ft = mainActivity.getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.main_framelayout, eventsListFragment);
+        ft.commit();
+
     }
 
     @Override
@@ -143,25 +157,12 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
             groupName = itemView.findViewById(R.id.vh_groups_title);
             numOfMembers = itemView.findViewById(R.id.vh_groups_members);
             swipeRevealLayout = itemView.findViewById(R.id.vh_group_swipe_reveal_layout);
-            deleteButton = itemView.findViewById(R.id.vh_group_delete_btn);
+            deleteButton = itemView.findViewById(R.id.vh_group_leave_btn);
             editButton = itemView.findViewById(R.id.vh_group_edit_btn);
-            constraintLayout = itemView.findViewById(R.id.constraint_slide);
+            constraintLayout = itemView.findViewById(R.id.vh_group_constraint);
             cardView = itemView.findViewById(R.id.vh_group_cardview);
         }
-        /*@Override
-        public void onClick(View view){
-            groupClickedListener.onGroupClicked(getAdapterPosition());
-            AlertDialog.Builder dg = new AlertDialog.Builder(context);
-                    dg.setMessage("pinindot");
-                    dg.show();
-        }*/
     }
 
-    public interface OnGroupClickedListener {
-        void onGroupClicked(int position);
-    }
-    private OnGroupClickedListener groupClickedListener;
-    public void setGroupClickedListener(OnGroupClickedListener groupClickedListener){
-        this.groupClickedListener = groupClickedListener;
-    }
+
 }
