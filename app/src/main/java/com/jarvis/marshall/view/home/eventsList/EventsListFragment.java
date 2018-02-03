@@ -72,6 +72,7 @@ public class EventsListFragment extends Fragment {
     }
 
     public void addEvent(){
+        /*
         //Event event = new Event();
         //eventDA.createNewEvent(event);
         CreateEventFragment createEventFragment = new CreateEventFragment();
@@ -80,7 +81,11 @@ public class EventsListFragment extends Fragment {
         //ft.add(R.id.main_framelayout, eventsListFragment, "EventsListFragment");
         ft.replace(R.id.main_framelayout, createEventFragment,tag);
         ft.addToBackStack(tag);
-        ft.commit();
+        ft.commit();*/
+        CreateEventActivity createEventActivity = new CreateEventActivity();
+        Intent intent = new Intent(getContext(),createEventActivity.getClass());
+        startActivity(intent);
+        getActivity().overridePendingTransition(R.anim.enter_anim,R.anim.stay_anim);
     }
 
     public void loadEventsListRecyclerView(){

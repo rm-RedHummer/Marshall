@@ -131,6 +131,7 @@ public class SignupActivity extends AppCompatActivity {
         progressDialog.dismiss();
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
+        overridePendingTransition(R.anim.enter_anim, R.anim.exit_anim);
         finish();
     }
 

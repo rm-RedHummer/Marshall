@@ -139,6 +139,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
 
         FragmentTransaction ft = mainActivity.getSupportFragmentManager().beginTransaction();
         //ft.add(R.id.main_framelayout, eventsListFragment, "EventsListFragment");
+        ft.setCustomAnimations(R.anim.enter_anim,R.anim.stay_anim,R.anim.stay_anim,R.anim.exit_anim);
         ft.replace(R.id.main_framelayout, eventsListFragment,groupKey);
         ft.addToBackStack(groupKey);
         ft.commit();

@@ -135,6 +135,7 @@ public class LoginActivity extends AppCompatActivity {
         if(user!=null){
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.enter_anim, R.anim.exit_anim);
         }
     }
 
@@ -147,6 +148,7 @@ public class LoginActivity extends AppCompatActivity {
     public void onLoginSuccess() {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
+        overridePendingTransition(R.anim.enter_anim, R.anim.exit_anim);
         _loginButton.setEnabled(true);
         finish();
     }

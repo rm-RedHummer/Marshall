@@ -158,6 +158,7 @@ public class MainActivity extends AppCompatActivity
 
         ft.add(R.id.main_framelayout, fragment, tag);
         //ft.replace(R.id.main_framelayout,fragment,tag);
+        ft.setCustomAnimations(R.anim.enter_anim,R.anim.stay_anim,R.anim.stay_anim,R.anim.exit_anim);
         ft.addToBackStack(tag);
         ft.commit();
     }
