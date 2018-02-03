@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#ff388e3c</color>
-    <color name="colorPrimaryDark">#ff2e7d32</color>
+    <color name="colorPrimaryDark">#2e7d32</color>
     <color name="colorAccent">#ff388e3c</color>
     <color name="material_red_50">#ffffebee</color>
     <color name="material_red_100">#fff4c7c3</color>
@@ -150,7 +150,7 @@
     <color name="material_green_50">#ffe8f5e9</color>
     <color name="material_green_100">#c8e6c9</color>
     <color name="material_green_200">#ffa5d6a7</color>
-    <color name="material_green_300">#ff81c784</color>
+    <color name="material_green_300">#81c784</color>
     <color name="material_green_400">#66bb6a</color>
     <color name="material_green_500">#4caf50</color>
     <color name="material_green_600">#43a047</color>

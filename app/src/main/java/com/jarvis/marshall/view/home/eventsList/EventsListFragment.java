@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +17,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.jarvis.marshall.R;
+import com.jarvis.marshall.dataAccess.EventDA;
+import com.jarvis.marshall.model.Event;
+import com.jarvis.marshall.view.home.groups.HomeFragment;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -22,6 +27,8 @@ import com.jarvis.marshall.R;
 public class EventsListFragment extends Fragment {
     private View view;
     private RecyclerView recyclerView;
+    private EventDA eventDA;
+    private String tag;
 
     public EventsListFragment() {
         // Required empty public constructor
@@ -34,8 +41,14 @@ public class EventsListFragment extends Fragment {
         if(bundle!=null){
             AlertDialog.Builder dg = new AlertDialog.Builder(getContext());
             dg.setMessage(bundle.getString("groupKey"));
-            dg.show();
+            //dg.show();
         }
+
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        tag = fm.getBackStackEntryAt(
+                fm.getBackStackEntryCount() - 1).getName();
+
+        eventDA = new EventDA();
         view = inflater.inflate(R.layout.fragment_events_list, container, false);
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
         toolbar.setTitle("Events");
@@ -59,7 +72,15 @@ public class EventsListFragment extends Fragment {
     }
 
     public void addEvent(){
-
+        //Event event = new Event();
+        //eventDA.createNewEvent(event);
+        CreateEventFragment createEventFragment = new CreateEventFragment();
+        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+        ft.setCustomAnimations(R.anim.enter_anim,R.anim.stay_anim,R.anim.stay_anim,R.anim.exit_anim);
+        //ft.add(R.id.main_framelayout, eventsListFragment, "EventsListFragment");
+        ft.replace(R.id.main_framelayout, createEventFragment,tag);
+        ft.addToBackStack(tag);
+        ft.commit();
     }
 
     public void loadEventsListRecyclerView(){

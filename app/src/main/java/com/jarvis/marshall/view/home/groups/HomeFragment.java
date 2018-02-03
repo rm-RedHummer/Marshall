@@ -1,6 +1,5 @@
 package com.jarvis.marshall.view.home.groups;
 
-
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -61,6 +60,11 @@ public class HomeFragment extends Fragment {
         groupDA = new GroupDA();
         userDA = new UserDA();
         ButterKnife.bind(getActivity());
+
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        String tag = fm.getBackStackEntryAt(fm.getBackStackEntryCount() - 1).getName();
+
+
 
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
         toolbar.setTitle("Groups");

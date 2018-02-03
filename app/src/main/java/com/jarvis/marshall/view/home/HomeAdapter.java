@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
@@ -137,9 +138,15 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
         eventsListFragment.setArguments(bundle);
 
         FragmentTransaction ft = mainActivity.getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.main_framelayout, eventsListFragment);
+        //ft.add(R.id.main_framelayout, eventsListFragment, "EventsListFragment");
+        ft.replace(R.id.main_framelayout, eventsListFragment,groupKey);
+        ft.addToBackStack(groupKey);
         ft.commit();
 
+    }
+    public void clearBackStack(){
+        MainActivity mainActivity = (MainActivity) context;
+        final FragmentManager fm = mainActivity.getSupportFragmentManager();
     }
 
     @Override

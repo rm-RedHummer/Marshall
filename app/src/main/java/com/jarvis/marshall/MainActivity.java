@@ -1,28 +1,23 @@
 package com.jarvis.marshall;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 
@@ -41,12 +36,14 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private FirebaseAuth mAuth;
+    private FragmentManager fm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
+        fm = getSupportFragmentManager();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -66,9 +63,10 @@ public class MainActivity extends AppCompatActivity
         TextView email = header.findViewById(R.id.nav_header_email);
         email.setText(mAuth.getCurrentUser().getEmail());
 
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        changeFragment(new HomeFragment(), "GroupListFragment");
+        /*FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.main_framelayout, new HomeFragment());
-        ft.commit();
+        ft.commit();*/
     }
 
     public Context getAppContext() {
@@ -80,10 +78,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        FrameLayout frameLayout = findViewById(R.id.main_framelayout);
+        String tag = fm.getBackStackEntryAt(fm.getBackStackEntryCount() - 1).getName();
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        } else if(fm.getBackStackEntryCount()==1){
             //super.onBackPressed();
+
             AlertDialog.Builder dg = new AlertDialog.Builder(this);
             dg.setMessage("Do you want to exit?");
             dg.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -99,6 +100,10 @@ public class MainActivity extends AppCompatActivity
                 }
             });
             dg.show();
+        } else if(fm.getBackStackEntryCount()==2 && !tag.equals("Edit_Settings")){
+            fm.popBackStack();
+        } else if(fm.getBackStackEntryCount()==3){
+            fm.popBackStack();
         }
 
     }
@@ -136,9 +141,9 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_group) {
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.main_framelayout, new HomeFragment());
-            ft.commit();
+            while (fm.getBackStackEntryCount() != 1) {
+                fm.popBackStackImmediate();
+            }
         } else if (id == R.id.nav_settings) {
 
         }
@@ -148,5 +153,12 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    public void changeFragment(Fragment fragment, String tag){
+        FragmentTransaction ft = fm.beginTransaction();
 
+        ft.add(R.id.main_framelayout, fragment, tag);
+        //ft.replace(R.id.main_framelayout,fragment,tag);
+        ft.addToBackStack(tag);
+        ft.commit();
+    }
 }
