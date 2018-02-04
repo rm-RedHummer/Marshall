@@ -150,21 +150,6 @@ public class HomeFragment extends Fragment {
 
             }
         });
-
-        /*recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(),
-                recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                AlertDialog.Builder dg = new AlertDialog.Builder(getContext());
-                dg.setMessage(groupArrayList.get(position).getGroupName());
-                dg.show();
-            }
-
-            @Override
-            public void onLongItemClick(View view, int position) {
-
-            }
-        }));*/
     }
 
     public void loadToRecyclerView(DataSnapshot ds, final HomeAdapter adapter, final ArrayList<Group>

@@ -28,7 +28,7 @@ public class EventsListFragment extends Fragment {
     private View view;
     private RecyclerView recyclerView;
     private EventDA eventDA;
-    private String tag;
+    private String tag,groupKey;
 
     public EventsListFragment() {
         // Required empty public constructor
@@ -39,9 +39,7 @@ public class EventsListFragment extends Fragment {
                              Bundle savedInstanceState) {
         Bundle bundle = getArguments();
         if(bundle!=null){
-            AlertDialog.Builder dg = new AlertDialog.Builder(getContext());
-            dg.setMessage(bundle.getString("groupKey"));
-            //dg.show();
+            groupKey = bundle.getString("groupKey");
         }
 
         FragmentManager fm = getActivity().getSupportFragmentManager();
@@ -84,6 +82,7 @@ public class EventsListFragment extends Fragment {
         ft.commit();*/
         CreateEventActivity createEventActivity = new CreateEventActivity();
         Intent intent = new Intent(getContext(),createEventActivity.getClass());
+        intent.putExtra("groupKey",groupKey);
         startActivity(intent);
         getActivity().overridePendingTransition(R.anim.enter_anim,R.anim.stay_anim);
     }
