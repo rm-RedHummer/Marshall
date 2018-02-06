@@ -45,8 +45,8 @@ public class GroupDA extends DA{
         return rootRef.child(node).orderByChild("groupCode").equalTo(groupCode);
     }
 
-    public void addUserToGroup(final String userKey,String groupKey){
-        rootRef.child(node).child(groupKey).child("groupMembers").child(userKey).setValue("true");
+    public void addUserToGroup(final String userKey,String groupKey,String position){
+        rootRef.child(node).child(groupKey).child("groupMembers").child(userKey).setValue(position);
     }
 
 }

@@ -225,7 +225,7 @@ public class HomeFragment extends Fragment {
                                         key = ds.child("key").getValue().toString();
                                     }
                                     userDA.addGroup(mAuth.getCurrentUser().getUid(),key);
-                                    groupDA.addUserToGroup(mAuth.getCurrentUser().getUid(),key);
+                                    groupDA.addUserToGroup(mAuth.getCurrentUser().getUid(),key,"Member");
                                     dialog.dismiss();
                                     Snackbar.make(mainView, "Group successfully joined", Snackbar.LENGTH_LONG)
                                             .setAction("Action", null).show();
@@ -283,7 +283,7 @@ public class HomeFragment extends Fragment {
                                     final Group group = new Group(groupName.getText().toString(), key, groupCode);
                                     groupDA.createNewGroup(group);
                                     userDA.addGroup(mAuth.getCurrentUser().getUid(),key);
-                                    groupDA.addUserToGroup(mAuth.getCurrentUser().getUid(),key);
+                                    groupDA.addUserToGroup(mAuth.getCurrentUser().getUid(),key,"Admin");
                                     Snackbar.make(mainView, "The group is successfully created.", Snackbar.LENGTH_LONG)
                                             .setAction("Action", null).show();
                                 }

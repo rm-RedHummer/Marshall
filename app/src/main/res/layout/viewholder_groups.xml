@@ -122,6 +122,26 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/vh_groups_title" />
+
+                    <ImageView
+                        android:id="@+id/vh_group_checkImage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:tint="@color/colorPrimaryDark"
+                        app:layout_constraintBottom_toBottomOf="@+id/vh_groups_title"
+                        app:layout_constraintStart_toEndOf="@+id/vh_groups_title"
+                        app:layout_constraintTop_toTopOf="@+id/vh_groups_title"
+                        app:srcCompat="@drawable/ic_check_circle_black_16dp" />
+
+                    <TextView
+                        android:id="@+id/vh_group_userStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="10sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/vh_group_checkImage"
+                        app:layout_constraintStart_toEndOf="@+id/vh_group_checkImage"
+                        app:layout_constraintTop_toTopOf="@+id/vh_group_checkImage" />
                 </android.support.constraint.ConstraintLayout>
             </android.support.v7.widget.CardView>
         </android.support.constraint.ConstraintLayout>
