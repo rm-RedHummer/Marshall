@@ -104,11 +104,11 @@
                         android:id="@+id/vh_event_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="12dp"
+                        android:layout_marginStart="12dp"
                         android:layout_marginTop="12dp"
                         android:text="NEU FAIR"
                         android:textColor="@color/cardview_dark_background"
-                        android:textSize="16sp"
+                        android:textSize="17sp"
                         android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -162,6 +162,27 @@
                         android:textSize="10sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/vh_event_checkImage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:tint="@color/colorPrimaryDark"
+                        app:layout_constraintBottom_toBottomOf="@+id/vh_event_name"
+                        app:layout_constraintStart_toEndOf="@+id/vh_event_name"
+                        app:layout_constraintTop_toTopOf="@+id/vh_event_name"
+                        app:srcCompat="@drawable/ic_check_circle_black_16dp" />
+
+                    <TextView
+                        android:id="@+id/vh_event_userStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Admin"
+                        android:textSize="10sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/vh_event_checkImage"
+                        app:layout_constraintStart_toEndOf="@+id/vh_event_checkImage"
+                        app:layout_constraintTop_toTopOf="@+id/vh_event_checkImage" />
 
                 </android.support.constraint.ConstraintLayout>
             </android.support.v7.widget.CardView>

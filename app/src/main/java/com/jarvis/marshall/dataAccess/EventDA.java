@@ -10,5 +10,6 @@ public class EventDA extends  DA{
     private final String node = "event";
     public void createNewEvent(Event event){
         rootRef.child(node).child(event.getKey()).setValue(event);
+
     }
 }
