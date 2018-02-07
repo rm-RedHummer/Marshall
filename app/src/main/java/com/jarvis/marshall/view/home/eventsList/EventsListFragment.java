@@ -104,7 +104,69 @@ public class EventsListFragment extends Fragment {
         final EventsListAdapter adapter = new EventsListAdapter(getContext(),eventArrayList,progressDialog);
         recyclerView.setAdapter(adapter);
 
-        eventDA.getAllEvents(groupKey).addChildEventListener(new ChildEventListener() {
+        eventDA.getAllEvents(groupKey).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue()!=null){
+                    int num = 1;
+                    String date=null, description=null, endTime=null, groupKey=null, key=null, name=null, startTime=null,status=null,venue=null;
+                    ArrayList<String> eventMembers = new ArrayList<>();
+                    for(DataSnapshot ds2: dataSnapshot.getChildren()){
+                        for(DataSnapshot ds:ds2.getChildren()) {
+                            switch (num) {
+                                case (1):
+                                    date = ds.getValue().toString();
+                                    break;
+                                case (2):
+                                    description = ds.getValue().toString();
+                                    break;
+                                case (3):
+                                    endTime = ds.getValue().toString();
+                                    break;
+                                case (4):
+                                    for (DataSnapshot ds3 : ds.getChildren()) {
+                                        eventMembers.add(ds3.getKey() + ":" + ds3.getValue());
+                                    }
+                                    break;
+                                case (5):
+                                    groupKey = ds.getValue().toString();
+                                    break;
+                                case (6):
+                                    key = ds.getValue().toString();
+                                    break;
+                                case (7):
+                                    name = ds.getValue().toString();
+                                    break;
+                                case (8):
+                                    startTime = ds.getValue().toString();
+                                    break;
+                                case (9):
+                                    status = ds.getValue().toString();
+                                    break;
+                                case (10):
+                                    venue = ds.getValue().toString();
+                                    Event event = new Event(name, date, startTime, endTime, venue, description, status, key, groupKey);
+                                    event.setEventMembers(eventMembers);
+                                    eventArrayList.add(event);
+                                    adapter.notifyItemInserted(eventArrayList.size() - 1);
+                                    break;
+                            }
+                            if (num <= 10)
+                                num++;
+                            else
+                                num = 1;
+                        }
+                    }
+                } else {
+                    progressDialog.dismiss();
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+        /*eventDA.getAllEvents(groupKey).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 if(dataSnapshot.getValue()!=null){
@@ -155,7 +217,16 @@ public class EventsListFragment extends Fragment {
                         else
                             num = 1;
                     }
+                } else {
+                    AlertDialog.Builder dg = new AlertDialog.Builder(getContext());
+                    dg.setMessage("Pumasok");
+                    dg.show();
+                    progressDialog.dismiss();
                 }
+                AlertDialog.Builder dg = new AlertDialog.Builder(getContext());
+                dg.setMessage("Sa labas lang");
+                dg.show();
+
             }
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
@@ -169,7 +240,6 @@ public class EventsListFragment extends Fragment {
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
-        });
-        progressDialog.dismiss();
+        });*/
     }
 }

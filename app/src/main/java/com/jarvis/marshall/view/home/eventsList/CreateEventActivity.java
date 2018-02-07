@@ -47,7 +47,6 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
 
     }
 
-    @SuppressLint("NewApi")
     @Override
     public void onClick(View view) {
         switch (view.getId()){
@@ -69,9 +68,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
             case R.id.actCreateEvent_membersBtn:
                 break;
             case R.id.actCreateEvent_cancelBtn:
-                navigateUpTo(getIntent());
-                finish();
-                overridePendingTransition(R.anim.stay_anim,R.anim.exit_anim);
+                back();
                 break;
             case R.id.actCreateEvent_saveBtn:
                 createEvent();
@@ -91,6 +88,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         EventDA eventDA = new EventDA();
         eventDA.createNewEvent(event);
         eventDA.addEventMember(eventKey,mAuth.getCurrentUser().getUid(),"Admin");
+        back();
     }
 
     public void showDescriptionDialog(){
@@ -274,9 +272,12 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
 
     }
 
-    @SuppressLint("NewApi")
     @Override
     public void onBackPressed(){
+        back();
+    }
+    @SuppressLint("NewApi")
+    public void back(){
         navigateUpTo(getIntent());
         finish();
         overridePendingTransition(R.anim.stay_anim,R.anim.exit_anim);

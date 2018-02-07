@@ -107,9 +107,10 @@ public class SignupActivity extends AppCompatActivity {
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                                builder1.setMessage("Failed ang paggawa ng account");
+                                builder1.setMessage(task.getException().toString());
                                 AlertDialog alert11 = builder1.create();
                                 alert11.show();
+                                signupButton.setEnabled(true);
                                 //updateUI(null);
                             }
 
