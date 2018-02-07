@@ -73,7 +73,9 @@ public class CreateEventActivity extends AppCompatActivity {
 
     public void changeFragment(Fragment fragment, String tag){
         FragmentTransaction ft = fm.beginTransaction();
-
+        Bundle bundle = new Bundle();
+        bundle.putString("groupKey",groupKey);
+        fragment.setArguments(bundle);
         ft.add(R.id.actCreateEvent_frameLayout, fragment, tag);
         //ft.replace(R.id.main_framelayout,fragment,tag);
         ft.setCustomAnimations(R.anim.enter_anim,R.anim.stay_anim,R.anim.stay_anim,R.anim.exit_anim);

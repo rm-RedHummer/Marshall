@@ -48,13 +48,15 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        Bundle bundle = getArguments();
+        if(bundle!=null){
+            groupKey = bundle.getString("groupKey");
+        }
         view = inflater.inflate(R.layout.fragment_create_event, container, false);
+        mAuth = FirebaseAuth.getInstance();
         FragmentManager fm = getActivity().getSupportFragmentManager();
         tag = fm.getBackStackEntryAt(
                 fm.getBackStackEntryCount() - 1).getName();
-        AlertDialog.Builder dg = new AlertDialog.Builder(getContext());
-        dg.setMessage(tag);
-        dg.show();
         wireViews();
         return view;
     }
@@ -98,7 +100,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         Event event = new Event(eventName,date,startTime,endTime,venue,description,status,eventKey,groupKey);
         EventDA eventDA = new EventDA();
         eventDA.createNewEvent(event);
-        //eventDA.addEventMember(eventKey,mAuth.getCurrentUser().getUid(),"Admin");
+        eventDA.addEventMember(eventKey,mAuth.getCurrentUser().getUid(),"Admin");
     }
 
     public void showDescriptionDialog(){
