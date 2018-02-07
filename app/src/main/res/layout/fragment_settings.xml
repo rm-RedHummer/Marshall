@@ -50,7 +50,7 @@
             app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
         <Button
-            android:id="@+id/actChangeFullname_Btn"
+            android:id="@+id/settings_changeNameBtn"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -80,7 +80,7 @@
             app:srcCompat="@color/material_grey_200" />
 
         <Button
-            android:id="@+id/actChange_passBtn"
+            android:id="@+id/settings_changePasswordBtn"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -147,7 +147,7 @@
             app:srcCompat="@color/material_grey_200" />
 
         <Button
-            android:id="@+id/actChange_emailBtn"
+            android:id="@+id/settings_changeEmailBtn"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="159dp"
             android:layout_height="wrap_content"
@@ -160,43 +160,6 @@
             app:layout_constraintBottom_toBottomOf="@+id/textView2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/textView2" />
-
-        <ImageView
-            android:id="@+id/divider"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginStart="12dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@color/material_grey_200"
-            tools:layout_editor_absoluteY="366dp" />
-
-        <Button
-            android:id="@+id/actSettings_saveBtn"
-            style="@style/Widget.AppCompat.Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/colorPrimary"
-            android:text="Save"
-            android:textColor="@android:color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <Button
-            android:id="@+id/actSettings_cancelBtn"
-            style="@android:style/Widget.Material.Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:backgroundTint="@color/colorPrimary"
-            android:text="Cancel"
-            android:textColor="@android:color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/actCreateEvent_saveBtn" />
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

@@ -92,8 +92,7 @@ public class SignupActivity extends AppCompatActivity {
 
 
             // TODO: Implement your own signup logic here.
-            final AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
-            builder1.setCancelable(true);
+
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -107,10 +106,7 @@ public class SignupActivity extends AppCompatActivity {
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                                builder1.setMessage(task.getException().toString());
-                                AlertDialog alert11 = builder1.create();
-                                alert11.show();
-                                signupButton.setEnabled(true);
+                                onSignupFailed();
                                 //updateUI(null);
                             }
 
@@ -151,7 +147,11 @@ public class SignupActivity extends AppCompatActivity {
     }*/
 
     public void onSignupFailed() {
-        //Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
+        final AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+        builder1.setCancelable(true);
+        builder1.setMessage("Sorry, there is a problem in creating your account.");
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
         signupButton.setEnabled(true);
     }
 
