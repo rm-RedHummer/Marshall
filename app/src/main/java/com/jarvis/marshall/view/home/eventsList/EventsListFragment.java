@@ -4,12 +4,9 @@ package com.jarvis.marshall.view.home.eventsList;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -17,14 +14,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.jarvis.marshall.R;
 import com.jarvis.marshall.dataAccess.EventDA;
 import com.jarvis.marshall.model.Event;
-import com.jarvis.marshall.view.home.groups.HomeFragment;
+import com.jarvis.marshall.view.home.createEvent.CreateEventActivity;
 
 import java.util.ArrayList;
 

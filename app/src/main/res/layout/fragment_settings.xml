@@ -22,21 +22,18 @@
             app:srcCompat="@color/material_green_900" />
 
         <TextView
-            android:id="@+id/textView10"
+            android:id="@+id/fragmentSettings_userName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="64dp"
+            android:layout_marginBottom="24dp"
+            android:layout_marginStart="32dp"
             android:fontFamily="sans-serif"
-            android:text="SETTINGS"
+            android:text="Tony Stark"
             android:textColor="@color/common_google_signin_btn_text_dark_default"
-            android:textSize="30sp"
+            android:textSize="24sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.031"
-            app:layout_constraintStart_toStartOf="@+id/imageView"
-            app:layout_constraintTop_toTopOf="@+id/imageView" />
+            app:layout_constraintBottom_toBottomOf="@+id/imageView"
+            app:layout_constraintStart_toStartOf="@+id/imageView" />
 
         <TextView
             android:id="@+id/textView6"

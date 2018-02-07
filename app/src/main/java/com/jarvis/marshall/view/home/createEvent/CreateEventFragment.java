@@ -1,19 +1,19 @@
-package com.jarvis.marshall.view.home.eventsList;
+package com.jarvis.marshall.view.home.createEvent;
 
-import android.annotation.SuppressLint;
+
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
-import android.support.design.widget.TextInputEditText;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.design.widget.TextInputEditText;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -26,25 +26,37 @@ import com.jarvis.marshall.R;
 import com.jarvis.marshall.dataAccess.EventDA;
 import com.jarvis.marshall.model.Event;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 
-
-public class CreateEventActivity extends AppCompatActivity implements View.OnClickListener {
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class CreateEventFragment extends Fragment implements View.OnClickListener{
     private Button descriptionBtn,dateBtn,startTimeBtn,endTimeBtn,venueBtn,membersBtn,cancelBtn,saveBtn;
     private TextInputEditText eventNameEditText;
-    private String groupKey,eventName,eventKey,description,date,startTime,endTime,venue,status;
+    private String groupKey,eventName,eventKey,description,date,startTime,endTime,venue,status,tag;
+    private Integer rawStartHour, rawStartMinute,rawEndHour,rawEndMinute,rawYear,rawMonth,rawDay;
     private FirebaseAuth mAuth;
+    private View view;
+
+    public CreateEventFragment() {
+        // Required empty public constructor
+    }
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_event);
-        groupKey = getIntent().getExtras().getString("groupKey");
-        mAuth = FirebaseAuth.getInstance();
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        view = inflater.inflate(R.layout.fragment_create_event, container, false);
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        tag = fm.getBackStackEntryAt(
+                fm.getBackStackEntryCount() - 1).getName();
+        AlertDialog.Builder dg = new AlertDialog.Builder(getContext());
+        dg.setMessage(tag);
+        dg.show();
         wireViews();
-
+        return view;
     }
 
     @Override
@@ -68,7 +80,6 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
             case R.id.actCreateEvent_membersBtn:
                 break;
             case R.id.actCreateEvent_cancelBtn:
-                back();
                 break;
             case R.id.actCreateEvent_saveBtn:
                 createEvent();
@@ -81,20 +92,19 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         eventKey = rootRef.push().getKey();
         eventName = eventNameEditText.getText().toString();
         status = "On preparation";
-        /*AlertDialog.Builder dg = new AlertDialog.Builder(this);
+        /*AlertDialog.Builder dg = new AlertDialog.Builder(getContext());
         dg.setMessage(eventName+"\n"+date+"\n"+startTime+"\n"+endTime+"\n"+venue+"\n"+description+"\n"+status+"\n"+eventKey);
         dg.show();*/
         Event event = new Event(eventName,date,startTime,endTime,venue,description,status,eventKey,groupKey);
         EventDA eventDA = new EventDA();
         eventDA.createNewEvent(event);
-        eventDA.addEventMember(eventKey,mAuth.getCurrentUser().getUid(),"Admin");
-        back();
+        //eventDA.addEventMember(eventKey,mAuth.getCurrentUser().getUid(),"Admin");
     }
 
     public void showDescriptionDialog(){
         LayoutInflater inflater = getLayoutInflater();
         final View view2 = inflater.inflate(R.layout.dialog_enter_description,null);
-        final AlertDialog dialog = new AlertDialog.Builder(this)
+        final AlertDialog dialog = new AlertDialog.Builder(getContext())
                 .setView(view2)
                 .setTitle("Enter event description")
                 .setPositiveButton("Confirm", null) //Set to null. We override the onclick
@@ -134,7 +144,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
     public void showVenueDialog(){
         LayoutInflater inflater = getLayoutInflater();
         final View view2 = inflater.inflate(R.layout.dialog_enter_venue,null);
-        final AlertDialog dialog = new AlertDialog.Builder(this)
+        final AlertDialog dialog = new AlertDialog.Builder(getContext())
                 .setView(view2)
                 .setTitle("Enter event venue")
                 .setPositiveButton("Confirm", null) //Set to null. We override the onclick
@@ -171,34 +181,55 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         });
         dialog.show();
     }
-
-    @Override
-    @Deprecated
-    protected Dialog onCreateDialog(int id) {
+    private void showDialog(int id){
         final Calendar c = Calendar.getInstance();
         if(id==0) {
-            int year = c.get(Calendar.YEAR);
-            int month = c.get(Calendar.MONTH);
-            int day = c.get(Calendar.DAY_OF_MONTH);
-            return new DatePickerDialog(this, datePickerListener, year, month, day);
+            int year = 0, month = 0, day = 0;
+            if(dateBtn.getText().toString().toLowerCase().equals("select date")){
+                year = c.get(Calendar.YEAR);
+                month = c.get(Calendar.MONTH);
+                day = c.get(Calendar.DAY_OF_MONTH);
+            } else {
+                year = rawYear;
+                month = rawMonth;
+                day = rawDay;
+            }
+            DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), datePickerListener, year, month, day);
+            datePickerDialog.show();
         }
         else if(id==1) {
             int hour = 0, minute = 0;
-            hour = c.get(Calendar.HOUR_OF_DAY);
-            minute = c.get(Calendar.MINUTE);
-            return new TimePickerDialog(this, timePickerListener1, hour,minute,DateFormat.is24HourFormat(this));
+            if(startTimeBtn.getText().toString().toLowerCase().equals("select start time")){
+                hour = c.get(Calendar.HOUR_OF_DAY);
+                minute = c.get(Calendar.MINUTE);
+            } else {
+                hour = rawStartHour;
+                minute = rawStartMinute;
+            }
+
+            TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), timePickerListener1, hour,minute, DateFormat.is24HourFormat(getContext()));
+            timePickerDialog.show();
         }
         else {
             int hour = 0, minute = 0;
-            hour = c.get(Calendar.HOUR_OF_DAY);
-            minute = c.get(Calendar.MINUTE);
-            return new TimePickerDialog(this, timePickerListener2, hour, minute, DateFormat.is24HourFormat(this));
+            if(endTimeBtn.getText().toString().toLowerCase().equals("select end time")){
+                hour = c.get(Calendar.HOUR_OF_DAY);
+                minute = c.get(Calendar.MINUTE);
+            } else {
+                hour = rawEndHour;
+                minute = rawEndMinute;
+            }
+            TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), timePickerListener2, hour, minute, DateFormat.is24HourFormat(getContext()));
+            timePickerDialog.show();
         }
     }
 
     private DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
         public void onDateSet(DatePicker view, int selectedYear,
                               int selectedMonth, int selectedDay) {
+            rawYear = selectedYear;
+            rawMonth = selectedMonth;
+            rawDay = selectedDay;
             date = selectedMonth+"/"+selectedDay+"/"+selectedYear;
             dateBtn.setText(selectedDay + " / " + (selectedMonth + 1) + " / "
                     + selectedYear);
@@ -208,6 +239,8 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         @Override
         public void onTimeSet(TimePicker timePicker, int hour, int minute) {
             String timeChosen = String.valueOf(hour)+":"+String.valueOf(minute);
+            rawStartHour = hour;
+            rawStartMinute = minute;
             startTime = timeChosen;
             startTimeBtn.setText(processTime(timeChosen));
         }
@@ -216,6 +249,8 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         @Override
         public void onTimeSet(TimePicker timePicker, int hour, int minute) {
             String timeChosen = String.valueOf(hour)+":"+String.valueOf(minute);
+            rawEndHour = hour;
+            rawEndMinute = minute;
             endTime = timeChosen;
             endTimeBtn.setText(processTime(timeChosen));
         }
@@ -252,15 +287,15 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
 
 
     private void wireViews(){
-        eventNameEditText = findViewById(R.id.actCreateEvent_eventName);
-        descriptionBtn = findViewById(R.id.actCreateEvent_descriptionBtn);
-        dateBtn = findViewById(R.id.actCreateEvent_dateBtn);
-        endTimeBtn = findViewById(R.id.actCreateEvent_endTimeBtn);
-        startTimeBtn = findViewById(R.id.actCreateEvent_startTimeBtn);
-        venueBtn = findViewById(R.id.actCreateEvent_venueBtn);
-        membersBtn = findViewById(R.id.actCreateEvent_membersBtn);
-        saveBtn = findViewById(R.id.actCreateEvent_saveBtn);
-        cancelBtn = findViewById(R.id.actCreateEvent_cancelBtn);
+        eventNameEditText = view.findViewById(R.id.actCreateEvent_eventName);
+        descriptionBtn = view.findViewById(R.id.actCreateEvent_descriptionBtn);
+        dateBtn = view.findViewById(R.id.actCreateEvent_dateBtn);
+        endTimeBtn = view.findViewById(R.id.actCreateEvent_endTimeBtn);
+        startTimeBtn = view.findViewById(R.id.actCreateEvent_startTimeBtn);
+        venueBtn = view.findViewById(R.id.actCreateEvent_venueBtn);
+        membersBtn = view.findViewById(R.id.actCreateEvent_membersBtn);
+        saveBtn = view.findViewById(R.id.actCreateEvent_saveBtn);
+        cancelBtn = view.findViewById(R.id.actCreateEvent_cancelBtn);
         descriptionBtn.setOnClickListener(this);
         dateBtn.setOnClickListener(this);
         endTimeBtn.setOnClickListener(this);
@@ -269,28 +304,6 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         membersBtn.setOnClickListener(this);
         cancelBtn.setOnClickListener(this);
         saveBtn.setOnClickListener(this);
-
     }
 
-    @Override
-    public void onBackPressed(){
-        back();
-    }
-    @SuppressLint("NewApi")
-    public void back(){
-        navigateUpTo(getIntent());
-        finish();
-        overridePendingTransition(R.anim.stay_anim,R.anim.exit_anim);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                overridePendingTransition(R.anim.stay_anim,R.anim.exit_anim);
-                break;
-        }
-        return true;
-    }
 }

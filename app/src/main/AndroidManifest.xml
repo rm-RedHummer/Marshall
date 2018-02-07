@@ -33,7 +33,7 @@
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".view.home.eventsList.CreateEventActivity" >
+            android:name=".view.home.createEvent.CreateEventActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
