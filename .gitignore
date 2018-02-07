@@ -1,5 +1,4 @@
 app\app.iml
-.gradle
 /local.properties
 /.idea/workspace.xml
 /.idea/libraries
@@ -7,10 +6,3 @@ app\app.iml
 /build
 /captures
 .externalNativeBuild
-*.iml
-*.json
-*.iml
-*.json
-*.iml
-*.iml
-app/app.iml
