@@ -43,6 +43,7 @@ import java.util.ArrayList;
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
     private Context context;
     private ArrayList<Group> groupList;
+    private String userPosition;
     private LayoutInflater inflater;
     private GroupDA groupDA;
     private ProgressDialog progressDialog;
@@ -111,6 +112,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
                                 if(dataSnapshot1.getValue().equals("Member")){
                                     holder.check.setVisibility(View.INVISIBLE);
                                     holder.userPosition.setVisibility(View.INVISIBLE);
+                                    holder.userPosition.setText("Member");
                                 } else {
                                     holder.userPosition.setText("Admin");
                                 }
@@ -131,6 +133,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
 
             }
         });
+        userPosition = holder.userPosition.getText().toString();
         final int  width = Resources.getSystem().getDisplayMetrics().widthPixels;
         holder.constraintLayout.post(new Runnable() {
             @Override
@@ -150,6 +153,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
         EventsListFragment eventsListFragment = new EventsListFragment();
         Bundle bundle = new Bundle();
         bundle.putString("groupKey",groupKey);
+        bundle.putString("userPosition",userPosition);
         eventsListFragment.setArguments(bundle);
 
         FragmentTransaction ft = mainActivity.getSupportFragmentManager().beginTransaction();

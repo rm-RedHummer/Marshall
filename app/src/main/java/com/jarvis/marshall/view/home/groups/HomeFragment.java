@@ -154,7 +154,7 @@ public class HomeFragment extends Fragment {
 
     public void loadToRecyclerView(DataSnapshot ds, final HomeAdapter adapter, final ArrayList<Group>
             groupArrayList){
-
+        String userPosition=null;
         groupDA.getGroup(ds.getKey().toString()).addChildEventListener(new ChildEventListener() {
             int num = 1;
             String key,groupName = null,groupCode=null;
@@ -177,6 +177,7 @@ public class HomeFragment extends Fragment {
                     group.setGroupMembers(groupMembers);
                     groupArrayList.add(group);
                     adapter.notifyItemInserted(groupArrayList.size() - 1);
+
                 }
                 if (num < 5)
                     num++;

@@ -19,12 +19,14 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TimePicker;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.jarvis.marshall.R;
 import com.jarvis.marshall.dataAccess.EventDA;
 import com.jarvis.marshall.model.Event;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 
@@ -32,6 +34,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
     private Button descriptionBtn,dateBtn,startTimeBtn,endTimeBtn,venueBtn,membersBtn,cancelBtn,saveBtn;
     private TextInputEditText eventNameEditText;
     private String groupKey,eventName,eventKey,description,date,startTime,endTime,venue,status;
+    private FirebaseAuth mAuth;
 
 
     @Override
@@ -39,6 +42,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
         groupKey = getIntent().getExtras().getString("groupKey");
+        mAuth = FirebaseAuth.getInstance();
         wireViews();
 
     }
@@ -83,10 +87,10 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         /*AlertDialog.Builder dg = new AlertDialog.Builder(this);
         dg.setMessage(eventName+"\n"+date+"\n"+startTime+"\n"+endTime+"\n"+venue+"\n"+description+"\n"+status+"\n"+eventKey);
         dg.show();*/
-        Event event = new Event(eventName,date,startTime,endTime,venue,description,status,eventKey);
+        Event event = new Event(eventName,date,startTime,endTime,venue,description,status,eventKey,groupKey);
         EventDA eventDA = new EventDA();
         eventDA.createNewEvent(event);
-
+        eventDA.addEventMember(eventKey,mAuth.getCurrentUser().getUid(),"Admin");
     }
 
     public void showDescriptionDialog(){

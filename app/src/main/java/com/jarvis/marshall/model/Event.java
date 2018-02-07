@@ -7,11 +7,11 @@ import java.util.ArrayList;
  */
 
 public class Event {
-    private String name, date, startTime, endTime,venue, description, status, key;
-    private ArrayList<String> updatesList,eventMembers;
+    private String name, date, startTime, endTime,venue, description, status, key, groupKey;
+    private ArrayList<String> eventMembers;
 
     public Event(String name, String date, String startTime, String endTime, String venue,
-                 String description, String status, String key){
+                 String description, String status, String key, String groupKey){
         this.name = name;
         this.date = date;
         this.startTime = startTime;
@@ -20,6 +20,7 @@ public class Event {
         this.description = description;
         this.status = status;
         this.key = key;
+        this.groupKey = groupKey;
     }
 
     public void setName(String name) {
@@ -54,8 +55,8 @@ public class Event {
         this.key = key;
     }
 
-    public void setUpdatesList(ArrayList<String> updatesList) {
-        this.updatesList = updatesList;
+    public void setGroupKey(String groupKey) {
+        this.groupKey = groupKey;
     }
 
     public void setEventMembers(ArrayList<String> eventMembers) {
@@ -94,8 +95,8 @@ public class Event {
         return key;
     }
 
-    public ArrayList<String> getUpdatesList() {
-        return updatesList;
+    public String getGroupKey() {
+        return groupKey;
     }
 
     public ArrayList<String> getEventMembers() {
