@@ -46,9 +46,7 @@ public class SelectEventLeaderFragment extends Fragment implements View.OnClickL
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_select_event_leader, container, false);
-        Bundle bundle = getArguments();
-        if(bundle!=null)
-            groupKey = bundle.getString("groupKey");
+        groupKey = getActivity().getIntent().getExtras().getString("groupKey");
         groupDA = new GroupDA();
         userDA = new UserDA();
         fm = getActivity().getSupportFragmentManager();
@@ -65,19 +63,13 @@ public class SelectEventLeaderFragment extends Fragment implements View.OnClickL
         backBtn = view.findViewById(R.id.fragSelectEventLeader_backBtn);
         backBtn.setOnClickListener(this);
 
-
         return view;
     }
 
     public void loadSelectEventLeaderRecyclerView(){
-        final ProgressDialog progressDialog = new ProgressDialog(getContext(),
-                R.style.AppTheme_Dialog);
-        progressDialog.show();
-        progressDialog.setMessage("Loading members..");
-
         userKeyList = new ArrayList<>();
         final ArrayList<String> stringArrayList = new ArrayList<>();
-        adapter = new SelectEventLeaderAdapter(getContext(),stringArrayList,progressDialog);
+        adapter = new SelectEventLeaderAdapter(getContext(),stringArrayList);
         recyclerView.setAdapter(adapter);
         groupDA.getGroupMembers(groupKey).addValueEventListener(new ValueEventListener() {
             @Override
@@ -113,20 +105,15 @@ public class SelectEventLeaderFragment extends Fragment implements View.OnClickL
             case(R.id.fragSelectEventLeader_confirmBtn):
                 SelectMembersFragment fragment = new SelectMembersFragment();
                 FragmentTransaction ft = fm.beginTransaction();
-                Bundle bundle = new Bundle();
                 String tag = "SelectEventMembers";
-                bundle.putString("groupKey",groupKey);
-                bundle.putString("eventLeaderPosition",userKeyList.get(adapter.getCheckedButton()));
-
-                fragment.setArguments(bundle);
-                //ft.add(R.id.actCreateEvent_frameLayout, fragment, tag);
+                getActivity().getIntent().putExtra("eventLeaderUserKey",userKeyList.get(adapter.getCheckedButton()));
                 ft.replace(R.id.actCreateEvent_frameLayout,fragment,tag);
                 ft.setCustomAnimations(R.anim.enter_anim,R.anim.stay_anim,R.anim.stay_anim,R.anim.exit_anim);
                 ft.addToBackStack(tag);
                 ft.commit();
                 break;
             case(R.id.fragSelectEventLeader_backBtn):
-
+                fm.popBackStackImmediate();
                 break;
         }
     }

@@ -26,21 +26,18 @@ import java.util.zip.Inflater;
 public class SelectEventLeaderAdapter extends RecyclerView.Adapter<SelectEventLeaderAdapter.ListHolder> {
     private Context context;
     private ArrayList<String> stringArrayList;
-    private ProgressDialog progressDialog;
     private LayoutInflater inflater;
     private CompoundButton lastCheckedRB = null;
 
-    public SelectEventLeaderAdapter(Context context, ArrayList<String> stringArrayList, ProgressDialog progressDialog){
+    public SelectEventLeaderAdapter(Context context, ArrayList<String> stringArrayList){
         this.context = context;
         inflater = LayoutInflater.from(context);
         this.stringArrayList =stringArrayList;
-        this.progressDialog = progressDialog;
     }
 
     @Override
     public ListHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = inflater.inflate(R.layout.viewholder_select_event_leader, parent, false);
-        progressDialog.dismiss();
         return new ListHolder(itemView);
     }
 

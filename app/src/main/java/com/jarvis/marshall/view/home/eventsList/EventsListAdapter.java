@@ -74,11 +74,10 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Li
                             case (4):
                                 for(DataSnapshot ds2: ds.getChildren()){
                                     if(ds2.getKey().equals(mAuth.getCurrentUser().getUid()))
+                                        holder.check.setVisibility(View.VISIBLE);
+                                        holder.userPosition.setVisibility(View.VISIBLE);
                                         holder.userPosition.setText(ds2.getValue().toString());
-                                    else {
-                                        holder.check.setVisibility(View.INVISIBLE);
-                                        holder.userPosition.setVisibility(View.INVISIBLE);
-                                    }
+
                                 }
                                 break;
                             case (7):

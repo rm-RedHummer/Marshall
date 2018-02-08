@@ -22,20 +22,17 @@ import java.util.ArrayList;
 public class SelectEventMemberAdapter extends RecyclerView.Adapter<SelectEventMemberAdapter.ListHolder> {
     private Context context;
     private ArrayList<String> stringArrayList,positionArrayList;
-    private ProgressDialog progressDialog;
     private LayoutInflater inflater;
-    public SelectEventMemberAdapter(Context context, ArrayList<String> stringArrayList, ProgressDialog progressDialog){
+    public SelectEventMemberAdapter(Context context, ArrayList<String> stringArrayList){
         this.context = context;
         inflater = LayoutInflater.from(context);
         this.stringArrayList =stringArrayList;
-        this.progressDialog = progressDialog;
         positionArrayList = new ArrayList<>();
     }
 
     @Override
     public ListHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = inflater.inflate(R.layout.viewholder_select_event_members, parent, false);
-        progressDialog.dismiss();
         return new ListHolder(itemView);
     }
 

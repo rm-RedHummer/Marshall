@@ -197,6 +197,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="6dp"
                         android:tint="@color/colorPrimaryDark"
+                        android:visibility="invisible"
                         app:layout_constraintBottom_toBottomOf="@+id/vh_event_name"
                         app:layout_constraintStart_toEndOf="@+id/vh_event_name"
                         app:layout_constraintTop_toTopOf="@+id/vh_event_name"
@@ -208,6 +209,7 @@
                         android:layout_height="wrap_content"
                         android:text="Admin"
                         android:textSize="10sp"
+                        android:visibility="invisible"
                         app:layout_constraintBottom_toBottomOf="@+id/vh_event_checkImage"
                         app:layout_constraintStart_toEndOf="@+id/vh_event_checkImage"
                         app:layout_constraintTop_toTopOf="@+id/vh_event_checkImage" />

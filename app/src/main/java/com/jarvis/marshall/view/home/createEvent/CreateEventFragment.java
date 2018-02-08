@@ -6,6 +6,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
@@ -28,6 +29,7 @@ import com.jarvis.marshall.R;
 import com.jarvis.marshall.dataAccess.EventDA;
 import com.jarvis.marshall.model.Event;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
@@ -36,11 +38,12 @@ import java.util.Calendar;
 public class CreateEventFragment extends Fragment implements View.OnClickListener{
     private Button descriptionBtn,dateBtn,startTimeBtn,endTimeBtn,venueBtn,membersBtn,cancelBtn,saveBtn;
     private TextInputEditText eventNameEditText;
-    private String groupKey,eventName,eventKey,description,date,startTime,endTime,venue,status,tag;
+    private String groupKey,eventName=null,eventKey,description=null,date="",startTime="",endTime="",venue="",status,tag;
     private Integer rawStartHour, rawStartMinute,rawEndHour,rawEndMinute,rawYear,rawMonth,rawDay;
     private FirebaseAuth mAuth;
     private FragmentManager fm;
     private View view;
+    private Intent dataBundle;
 
     public CreateEventFragment() {
         // Required empty public constructor
@@ -51,17 +54,19 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        Bundle bundle = getArguments();
-        if(bundle!=null)
-            groupKey = bundle.getString("groupKey");
+        dataBundle = getActivity().getIntent();
+        groupKey = dataBundle.getExtras().getString("groupKey");
         view = inflater.inflate(R.layout.fragment_create_event, container, false);
         mAuth = FirebaseAuth.getInstance();
         fm = getActivity().getSupportFragmentManager();
         tag = fm.getBackStackEntryAt(
                 fm.getBackStackEntryCount() - 1).getName();
         wireViews();
+        initializeDataToList();
+
         return view;
     }
+
 
     @Override
     public void onClick(View view) {
@@ -82,6 +87,8 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                 showVenueDialog();
                 break;
             case R.id.actCreateEvent_membersBtn:
+                if(eventName!=null)
+                    dataBundle.putExtra("eventName",eventName);
                 changeFragment(new SelectEventLeaderFragment(), "SelectEventLeaderFragment");
                 break;
             case R.id.actCreateEvent_cancelBtn:
@@ -89,6 +96,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                 break;
             case R.id.actCreateEvent_saveBtn:
                 createEvent();
+
                 back();
                 break;
         }
@@ -99,21 +107,20 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         eventKey = rootRef.push().getKey();
         eventName = eventNameEditText.getText().toString();
         status = "On preparation";
-        /*AlertDialog.Builder dg = new AlertDialog.Builder(getContext());
-        dg.setMessage(eventName+"\n"+date+"\n"+startTime+"\n"+endTime+"\n"+venue+"\n"+description+"\n"+status+"\n"+eventKey);
-        dg.show();*/
         Event event = new Event(eventName,date,startTime,endTime,venue,description,status,eventKey,groupKey);
         EventDA eventDA = new EventDA();
         eventDA.createNewEvent(event);
-        eventDA.addEventMember(eventKey,mAuth.getCurrentUser().getUid(),"Admin");
+        String eventLeaderUserKey = dataBundle.getExtras().getString("eventLeaderUserKey");
+        ArrayList<String> eventMembersKey = dataBundle.getExtras().getStringArrayList("eventMembersArrayList");
+        eventDA.addEventMember(eventKey,eventLeaderUserKey,"Manager");
+        for(int ctr = 0 ; ctr < eventMembersKey.size(); ctr++){
+            eventDA.addEventMember(eventKey,eventMembersKey.get(ctr),"Member");
+        }
+
     }
 
     public void changeFragment(Fragment fragment, String tag){
         FragmentTransaction ft = fm.beginTransaction();
-        Bundle bundle = new Bundle();
-        bundle.putString("groupKey",groupKey);
-        fragment.setArguments(bundle);
-        //ft.add(R.id.actCreateEvent_frameLayout, fragment, tag);
         ft.replace(R.id.actCreateEvent_frameLayout,fragment,tag);
         ft.setCustomAnimations(R.anim.enter_anim,R.anim.stay_anim,R.anim.stay_anim,R.anim.exit_anim);
         ft.addToBackStack(tag);
@@ -130,7 +137,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                 .setNegativeButton("Cancel", null)
                 .create();
         final EditText descriptionEditText = view2.findViewById(R.id.dgCreateEvent_description);
-        if(!descriptionBtn.getText().toString().equals("ENTER DESCRIPTION")){
+        if(!descriptionBtn.getText().toString().toLowerCase().equals("enter description")){
             descriptionEditText.setText(description);
         }
 
@@ -142,12 +149,13 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                     @Override
                     public void onClick(View view) {
                         description = descriptionEditText.getText().toString();
+                        dataBundle.putExtra("description",description);
                         if(description.equals("")){
                             descriptionBtn.setText("ENTER DESCRIPTION");
                         } else {
                             String displayDescription = null;
-                            if (description.length() > 25)
-                                displayDescription = description.substring(0, 25);
+                            if (description.length() > 20)
+                                displayDescription = description.substring(0, 20);
                             else
                                 displayDescription = description;
                             descriptionBtn.setText(displayDescription);
@@ -183,12 +191,13 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                     @Override
                     public void onClick(View view) {
                         venue = venueEditText.getText().toString();
+                        dataBundle.putExtra("venue",venue);
                         if(venue.equals("")){
                             venueBtn.setText("ENTER VENUE");
                         } else {
                             String displayVenue = null;
-                            if(venue.length()>25)
-                                displayVenue = venue.substring(0,25);
+                            if(venue.length()>20)
+                                displayVenue = venue.substring(0,20);
                             else
                                 displayVenue = venue;
                             venueBtn.setText(displayVenue);
@@ -250,6 +259,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
             rawMonth = selectedMonth;
             rawDay = selectedDay;
             date = selectedMonth+"/"+selectedDay+"/"+selectedYear;
+            dataBundle.putExtra("date",date);
             dateBtn.setText(selectedDay + " / " + (selectedMonth + 1) + " / "
                     + selectedYear);
         }
@@ -261,6 +271,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
             rawStartHour = hour;
             rawStartMinute = minute;
             startTime = timeChosen;
+            dataBundle.putExtra("startTime",startTime);
             startTimeBtn.setText(processTime(timeChosen));
         }
     };
@@ -271,6 +282,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
             rawEndHour = hour;
             rawEndMinute = minute;
             endTime = timeChosen;
+            dataBundle.putExtra("endTime",endTime);
             endTimeBtn.setText(processTime(timeChosen));
         }
     };
@@ -333,4 +345,65 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         createEventActivity.overridePendingTransition(R.anim.stay_anim,R.anim.exit_anim);
     }
 
+    private void onChangeFragment(){
+        if(description!=null){
+            getActivity().getIntent().putExtra("description",description);
+        }
+    }
+
+
+    public void initializeDataToList(){
+        if(dataBundle.getExtras().containsKey("description")){
+            description = dataBundle.getExtras().getString("description");
+            if(description.equals("")){
+                descriptionBtn.setText("ENTER DESCRIPTION");
+            } else {
+                String displayDescription = null;
+                if (description.length() > 20)
+                    displayDescription = description.substring(0, 20);
+                else
+                    displayDescription = description;
+                descriptionBtn.setText(displayDescription);
+            }
+        }
+        if(dataBundle.getExtras().containsKey("venue")){
+            venue = dataBundle.getExtras().getString("venue");
+            if(venue.equals("")){
+                venueBtn.setText("ENTER VENUE");
+            } else {
+                String displayVenue = null;
+                if(venue.length()>20)
+                    displayVenue = venue.substring(0,20);
+                else
+                    displayVenue = venue;
+                venueBtn.setText(displayVenue);
+            }
+        }
+        if(dataBundle.getExtras().containsKey("date")){
+            date = dataBundle.getExtras().getString("date");
+            String[] dateSplit = date.split("/");
+            rawDay = Integer.valueOf(dateSplit[1]);
+            rawMonth = Integer.valueOf(dateSplit[0]);
+            rawYear = Integer.valueOf(dateSplit[2]);
+            dateBtn.setText(rawDay+"/"+(rawMonth+1)+"/"+rawYear);
+        }
+        if(dataBundle.getExtras().containsKey("startTime")){
+            startTime = dataBundle.getExtras().getString("startTime");
+            String[] timeSplit = startTime.split(":");
+            rawStartHour = Integer.valueOf(timeSplit[0]);
+            rawStartMinute = Integer.valueOf(timeSplit[1]);
+            startTimeBtn.setText(processTime(startTime));
+        }
+        if(dataBundle.getExtras().containsKey("endTime")){
+            endTime = dataBundle.getExtras().getString("endTime");
+            String[] timeSplit = endTime.split(":");
+            rawEndHour = Integer.valueOf(timeSplit[0]);
+            rawEndMinute = Integer.valueOf(timeSplit[1]);
+            endTimeBtn.setText(processTime(endTime));
+        }
+        if(dataBundle.getExtras().containsKey("eventName")){
+            eventName = dataBundle.getExtras().getString("eventName");
+            eventNameEditText.setText(eventName);
+        }
+    }
 }

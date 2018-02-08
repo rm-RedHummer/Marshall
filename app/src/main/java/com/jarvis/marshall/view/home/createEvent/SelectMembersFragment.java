@@ -33,6 +33,7 @@ public class SelectMembersFragment extends Fragment implements View.OnClickListe
     private Button backBtn,confirmBtn;
     private SelectEventMemberAdapter adapter;
     private FragmentManager fm;
+    private ArrayList<String> userKeyArrrayList;
 
     public SelectMembersFragment() {
         // Required empty public constructor
@@ -45,13 +46,12 @@ public class SelectMembersFragment extends Fragment implements View.OnClickListe
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_select_members, container, false);
         Bundle bundle = getArguments();
-        if(bundle!=null) {
-            groupKey = bundle.getString("groupKey");
-            eventLeaderKey = bundle.getString("eventLeaderPosition");
-        }
+        groupKey = getActivity().getIntent().getExtras().getString("groupKey");
+        eventLeaderKey = getActivity().getIntent().getExtras().getString("eventLeaderUserKey");
         groupDA = new GroupDA();
         userDA = new UserDA();
         fm = getActivity().getSupportFragmentManager();
+        userKeyArrrayList = new ArrayList<>();
 
         recyclerView = view.findViewById(R.id.fragSelectMember_recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -72,7 +72,7 @@ public class SelectMembersFragment extends Fragment implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()){
             case(R.id.fragSelectMember_confirmBtn):
-
+                setEventMembers();
                 break;
             case(R.id.fragSelectMember_backBtn):
                 fm.popBackStackImmediate();
@@ -81,19 +81,15 @@ public class SelectMembersFragment extends Fragment implements View.OnClickListe
     }
 
     private void loadSelectEventMemberRecyclerView(){
-        final ProgressDialog progressDialog = new ProgressDialog(getContext(),
-                R.style.AppTheme_Dialog);
-        progressDialog.show();
-        progressDialog.setMessage("Loading members..");
-
         final ArrayList<String> stringArrayList = new ArrayList<>();
-        adapter = new SelectEventMemberAdapter(getContext(),stringArrayList,progressDialog);
+        adapter = new SelectEventMemberAdapter(getContext(),stringArrayList);
         recyclerView.setAdapter(adapter);
         groupDA.getGroupMembers(groupKey).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot ds: dataSnapshot.getChildren()){
                     if(!ds.getKey().toString().equals(eventLeaderKey)) {
+                        userKeyArrrayList.add(ds.getKey());
                         userDA.getUserName(ds.getKey()).addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot1) {
@@ -115,5 +111,19 @@ public class SelectMembersFragment extends Fragment implements View.OnClickListe
 
             }
         });
+    }
+
+    public void setEventMembers(){
+        ArrayList<String> membersList = adapter.getChecked();
+        ArrayList<String> memberKeyList = new ArrayList<>();
+        for(int ctr = 0; ctr< membersList.size(); ctr++){
+            memberKeyList.add(userKeyArrrayList.get(Integer.parseInt(membersList.get(ctr))));
+        }
+
+        getActivity().getIntent().putExtra("eventLeaderUserKey",eventLeaderKey);
+        getActivity().getIntent().putExtra("eventMembersArrayList",memberKeyList);
+        fm.popBackStackImmediate();
+        fm.popBackStackImmediate();
+
     }
 }
