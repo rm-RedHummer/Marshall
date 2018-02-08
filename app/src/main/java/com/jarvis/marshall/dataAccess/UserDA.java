@@ -22,4 +22,7 @@ public class UserDA extends DA {
     public Query getGroups(String key){
         return rootRef.child(node).child(key).child("userGroup");
     }
+    public Query getUserName(String userKey){
+        return rootRef.child(node).child(userKey).child("name");
+    }
 }

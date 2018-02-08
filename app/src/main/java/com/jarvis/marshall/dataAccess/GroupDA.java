@@ -49,4 +49,8 @@ public class GroupDA extends DA{
         rootRef.child(node).child(groupKey).child("groupMembers").child(userKey).setValue(position);
     }
 
+    public Query getGroupMembers(String groupKey){
+        return rootRef.child(node).child(groupKey).child("groupMembers");
+    }
+
 }

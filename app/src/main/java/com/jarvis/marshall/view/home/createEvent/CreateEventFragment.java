@@ -1,6 +1,7 @@
 package com.jarvis.marshall.view.home.createEvent;
 
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
@@ -37,6 +39,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     private String groupKey,eventName,eventKey,description,date,startTime,endTime,venue,status,tag;
     private Integer rawStartHour, rawStartMinute,rawEndHour,rawEndMinute,rawYear,rawMonth,rawDay;
     private FirebaseAuth mAuth;
+    private FragmentManager fm;
     private View view;
 
     public CreateEventFragment() {
@@ -49,12 +52,11 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         Bundle bundle = getArguments();
-        if(bundle!=null){
+        if(bundle!=null)
             groupKey = bundle.getString("groupKey");
-        }
         view = inflater.inflate(R.layout.fragment_create_event, container, false);
         mAuth = FirebaseAuth.getInstance();
-        FragmentManager fm = getActivity().getSupportFragmentManager();
+        fm = getActivity().getSupportFragmentManager();
         tag = fm.getBackStackEntryAt(
                 fm.getBackStackEntryCount() - 1).getName();
         wireViews();
@@ -80,11 +82,14 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                 showVenueDialog();
                 break;
             case R.id.actCreateEvent_membersBtn:
+                changeFragment(new SelectEventLeaderFragment(), "SelectEventLeaderFragment");
                 break;
             case R.id.actCreateEvent_cancelBtn:
+                back();
                 break;
             case R.id.actCreateEvent_saveBtn:
                 createEvent();
+                back();
                 break;
         }
     }
@@ -101,6 +106,18 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         EventDA eventDA = new EventDA();
         eventDA.createNewEvent(event);
         eventDA.addEventMember(eventKey,mAuth.getCurrentUser().getUid(),"Admin");
+    }
+
+    public void changeFragment(Fragment fragment, String tag){
+        FragmentTransaction ft = fm.beginTransaction();
+        Bundle bundle = new Bundle();
+        bundle.putString("groupKey",groupKey);
+        fragment.setArguments(bundle);
+        //ft.add(R.id.actCreateEvent_frameLayout, fragment, tag);
+        ft.replace(R.id.actCreateEvent_frameLayout,fragment,tag);
+        ft.setCustomAnimations(R.anim.enter_anim,R.anim.stay_anim,R.anim.stay_anim,R.anim.exit_anim);
+        ft.addToBackStack(tag);
+        ft.commit();
     }
 
     public void showDescriptionDialog(){
@@ -306,6 +323,14 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         membersBtn.setOnClickListener(this);
         cancelBtn.setOnClickListener(this);
         saveBtn.setOnClickListener(this);
+    }
+
+    @SuppressLint("NewApi")
+    public void back(){
+        CreateEventActivity createEventActivity = (CreateEventActivity) getContext();
+        createEventActivity.navigateUpTo(createEventActivity.getIntent());
+        createEventActivity.finish();
+        createEventActivity.overridePendingTransition(R.anim.stay_anim,R.anim.exit_anim);
     }
 
 }
