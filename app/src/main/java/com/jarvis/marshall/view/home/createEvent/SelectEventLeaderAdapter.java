@@ -28,7 +28,6 @@ public class SelectEventLeaderAdapter extends RecyclerView.Adapter<SelectEventLe
     private ArrayList<String> stringArrayList;
     private ProgressDialog progressDialog;
     private LayoutInflater inflater;
-    private GroupDA groupDA;
     private CompoundButton lastCheckedRB = null;
 
     public SelectEventLeaderAdapter(Context context, ArrayList<String> stringArrayList, ProgressDialog progressDialog){
@@ -36,7 +35,6 @@ public class SelectEventLeaderAdapter extends RecyclerView.Adapter<SelectEventLe
         inflater = LayoutInflater.from(context);
         this.stringArrayList =stringArrayList;
         this.progressDialog = progressDialog;
-        groupDA = new GroupDA();
     }
 
     @Override
@@ -58,6 +56,10 @@ public class SelectEventLeaderAdapter extends RecyclerView.Adapter<SelectEventLe
                 holder.radioButton.setChecked(true);
             }
         });
+    }
+
+    public int getCheckedButton(){
+        return (int) lastCheckedRB.getTag();
     }
 
     @Override
