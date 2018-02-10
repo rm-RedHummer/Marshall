@@ -230,7 +230,7 @@ public class EventsListFragment extends Fragment {
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
-        });/*
+        });*/
 
         /*eventDA.getAllEvents(groupKey).addChildEventListener(new ChildEventListener() {
             @Override

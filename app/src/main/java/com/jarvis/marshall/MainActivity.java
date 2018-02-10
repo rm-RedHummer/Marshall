@@ -141,9 +141,7 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_group) {
-            while (fm.getBackStackEntryCount() != 1) {
-                fm.popBackStackImmediate();
-            }
+            fm.popBackStack("GroupListFragment",0);
         } else if (id == R.id.nav_settings) {
 
         }
@@ -156,8 +154,8 @@ public class MainActivity extends AppCompatActivity
     public void changeFragment(Fragment fragment, String tag){
         FragmentTransaction ft = fm.beginTransaction();
 
-        ft.add(R.id.main_framelayout, fragment, tag);
-        //ft.replace(R.id.main_framelayout,fragment,tag);
+        //ft.add(R.id.main_framelayout, fragment, tag);
+        ft.replace(R.id.main_framelayout,fragment,tag);
         ft.setCustomAnimations(R.anim.enter_anim,R.anim.stay_anim,R.anim.stay_anim,R.anim.exit_anim);
         ft.addToBackStack(tag);
         ft.commit();
