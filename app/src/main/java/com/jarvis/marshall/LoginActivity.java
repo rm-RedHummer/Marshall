@@ -7,6 +7,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -34,7 +35,9 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        //getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         super.onCreate(savedInstanceState);
+        //getSupportActionBar().hide();
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         mAuth = FirebaseAuth.getInstance();
@@ -45,7 +48,6 @@ public class LoginActivity extends AppCompatActivity {
                 login();
             }
         });
-
         _signupLink.setOnClickListener(new View.OnClickListener() {
 
             @Override
