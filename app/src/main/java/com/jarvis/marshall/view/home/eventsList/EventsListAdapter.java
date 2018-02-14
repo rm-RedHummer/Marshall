@@ -59,13 +59,13 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Li
 
     @Override
     public void onBindViewHolder(final ListHolder holder, int position) {
-        Event event = eventArrayList.get(position);
+        final Event event = eventArrayList.get(position);
         viewBinderHelper.bind(holder.swipeRevealLayout,event.getKey());
 
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                viewEvent();
+                viewEvent(event.getKey());
             }
         });
 
@@ -169,10 +169,15 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Li
         progressDialog.dismiss();
     }
 
-    public void viewEvent(){
+    public void viewEvent(String eventKey){
         MainActivity mainActivity = (MainActivity) context;
         EventMainFragment eventMainFragment = new EventMainFragment();
         FragmentTransaction ft = mainActivity.getSupportFragmentManager().beginTransaction();
+
+        Bundle bundle = new Bundle();
+        bundle.putString("eventKey",eventKey);
+        eventMainFragment.setArguments(bundle);
+
         //ft.add(R.id.main_framelayout, eventsListFragment, "EventsListFragment");
         ft.setCustomAnimations(R.anim.enter_anim,R.anim.stay_anim,R.anim.stay_anim,R.anim.exit_anim);
         ft.replace(R.id.main_framelayout, eventMainFragment,"EventMainFragment");

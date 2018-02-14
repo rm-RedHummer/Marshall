@@ -1,6 +1,7 @@
 package com.jarvis.marshall.view.home.task;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -38,12 +39,29 @@ public class TasksFragment extends Fragment {
         loadTasksRecyclerView();
 
         FloatingActionButton fab = view.findViewById(R.id.fragment_tasks_fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                createTask();
+            }
+        });
 
         return view;
     }
 
     private void loadTasksRecyclerView(){
 
+    }
+
+    private void createTask(){
+
+
+
+        /*CreateEventActivity createEventActivity = new CreateEventActivity();
+        Intent intent = new Intent(getContext(),createEventActivity.getClass());
+        intent.putExtra("groupKey",groupKey);
+        startActivity(intent);
+        getActivity().overridePendingTransition(R.anim.enter_anim,R.anim.stay_anim);*/
     }
 
 }
