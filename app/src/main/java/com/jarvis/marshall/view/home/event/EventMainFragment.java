@@ -9,9 +9,9 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 
 import com.jarvis.marshall.R;
+import com.jarvis.marshall.view.home.task.TasksFragment;
 
 import java.util.ArrayList;
 import java.util.List;

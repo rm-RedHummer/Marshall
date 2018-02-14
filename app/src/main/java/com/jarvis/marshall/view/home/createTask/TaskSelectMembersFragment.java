@@ -1,4 +1,4 @@
-package com.jarvis.marshall.view.home.event;
+package com.jarvis.marshall.view.home.createTask;
 
 
 import android.os.Bundle;
@@ -12,10 +12,10 @@ import com.jarvis.marshall.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TasksFragment extends Fragment {
+public class TaskSelectMembersFragment extends Fragment {
 
 
-    public TasksFragment() {
+    public TaskSelectMembersFragment() {
         // Required empty public constructor
     }
 
@@ -24,7 +24,7 @@ public class TasksFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_tasks, container, false);
+        return inflater.inflate(R.layout.fragment_task_select_members, container, false);
     }
 
 }
