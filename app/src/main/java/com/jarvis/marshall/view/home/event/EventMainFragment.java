@@ -24,6 +24,7 @@ import butterknife.ButterKnife;
 public class EventMainFragment extends Fragment {
     private View view;
     private Adapter adapter;
+    private String eventKey;
 
     public EventMainFragment() {
         // Required empty public constructor
@@ -33,6 +34,10 @@ public class EventMainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        Bundle bundle = getArguments();
+        if(bundle!=null){
+            eventKey = bundle.getString("eventKey");
+        }
 
         view = inflater.inflate(R.layout.fragment_event_main, container, false);
         super.onCreate(savedInstanceState);
@@ -48,7 +53,7 @@ public class EventMainFragment extends Fragment {
         TasksFragment tasksFragment = new TasksFragment();
         Bundle bundle = new Bundle();
         bundle.putString("eventKey",eventKey);
-        eventMainFragment.setArguments(bundle);
+        tasksFragment.setArguments(bundle);
 
         adapter.addFragment(new DetailsFragment(), "Details");
         adapter.addFragment(tasksFragment, "Tasks");
