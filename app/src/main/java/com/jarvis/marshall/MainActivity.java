@@ -30,6 +30,8 @@ import com.jarvis.marshall.dataAccess.UserDA;
 import com.jarvis.marshall.model.Group;
 import com.jarvis.marshall.view.home.HomeAdapter;
 import com.jarvis.marshall.view.home.groups.HomeFragment;
+import com.jarvis.marshall.view.home.settings.SettingsFragment;
+
 
 import java.util.ArrayList;
 
@@ -143,7 +145,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_group) {
             fm.popBackStack("GroupListFragment",0);
         } else if (id == R.id.nav_settings) {
-
+            changeFragment(new SettingsFragment(), "");
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
