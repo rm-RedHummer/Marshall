@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.jarvis.marshall.R;
 
 import butterknife.ButterKnife;
@@ -24,6 +25,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener
     private View view;
     private Button fullnameBtn, passwordBtn, emailBtn;
     private String fullname,password,email;
+    private FirebaseAuth mAuth;
 
     public SettingsFragment()
     {
@@ -34,6 +36,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {// Inflate the layout for this fragment
 
+        mAuth = FirebaseAuth.getInstance();
         view = inflater.inflate(R.layout.fragment_settings, container, false);
         FragmentManager fm = getActivity().getSupportFragmentManager();
         String tag = fm.getBackStackEntryAt(fm.getBackStackEntryCount() - 1).getName();

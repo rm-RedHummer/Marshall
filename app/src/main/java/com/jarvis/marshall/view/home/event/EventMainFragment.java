@@ -33,6 +33,7 @@ public class EventMainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         view = inflater.inflate(R.layout.fragment_event_main, container, false);
         super.onCreate(savedInstanceState);
         final ViewPager viewPager = view.findViewById(R.id.viewpager);
@@ -44,8 +45,13 @@ public class EventMainFragment extends Fragment {
 
     private void setupViewPager(ViewPager viewPager){
         adapter = new Adapter(getChildFragmentManager());
+        TasksFragment tasksFragment = new TasksFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("eventKey",eventKey);
+        eventMainFragment.setArguments(bundle);
+
         adapter.addFragment(new DetailsFragment(), "Details");
-        adapter.addFragment(new TasksFragment(), "Tasks");
+        adapter.addFragment(tasksFragment, "Tasks");
         adapter.addFragment(new CommentsFragment(), "Comments");
         viewPager.setAdapter(adapter);
     }
