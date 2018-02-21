@@ -6,4 +6,10 @@
     android:layout_height="match_parent"
     tools:context="com.jarvis.marshall.view.home.createTask.CreateTaskActivity">
 
+    <FrameLayout
+        android:id="@+id/actCreateTask_FrameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </FrameLayout>
 </android.support.constraint.ConstraintLayout>
