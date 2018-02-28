@@ -2,6 +2,7 @@ package com.jarvis.marshall.view.home.event;
 
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -25,6 +26,7 @@ public class EventMainFragment extends Fragment {
     private View view;
     private Adapter adapter;
     private String eventKey;
+    private FloatingActionButton fab;
 
     public EventMainFragment() {
         // Required empty public constructor
@@ -45,6 +47,7 @@ public class EventMainFragment extends Fragment {
         setupViewPager(viewPager);
         TabLayout tabLayout = ButterKnife.findById(view, R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
+
         return view;
     }
 

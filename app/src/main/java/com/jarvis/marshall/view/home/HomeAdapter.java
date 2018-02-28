@@ -162,7 +162,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
         ft.replace(R.id.main_framelayout, eventsListFragment,groupKey);
         ft.addToBackStack(groupKey);
         ft.commit();
-
     }
     public void clearBackStack(){
         MainActivity mainActivity = (MainActivity) context;

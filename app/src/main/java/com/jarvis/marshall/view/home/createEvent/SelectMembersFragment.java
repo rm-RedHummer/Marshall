@@ -45,7 +45,6 @@ public class SelectMembersFragment extends Fragment implements View.OnClickListe
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_select_members, container, false);
-        Bundle bundle = getArguments();
         groupKey = getActivity().getIntent().getExtras().getString("groupKey");
         eventLeaderKey = getActivity().getIntent().getExtras().getString("eventLeaderUserKey");
         groupDA = new GroupDA();
@@ -124,6 +123,5 @@ public class SelectMembersFragment extends Fragment implements View.OnClickListe
         getActivity().getIntent().putExtra("eventMembersArrayList",memberKeyList);
         fm.popBackStackImmediate();
         fm.popBackStackImmediate();
-
     }
 }

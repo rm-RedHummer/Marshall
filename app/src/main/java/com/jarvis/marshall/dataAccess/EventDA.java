@@ -26,5 +26,9 @@ public class EventDA extends  DA{
         rootRef.child(node).child(eventKey).child("eventMembers").child(userKey).setValue(position);
     }
 
+    public Query getEventMembers(String eventKey){
+        return rootRef.child(node).child(eventKey).child("eventMembers");
+    }
+
 
 }
