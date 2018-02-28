@@ -7,6 +7,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,15 +54,17 @@ public class EventMainFragment extends Fragment {
 
     private void setupViewPager(ViewPager viewPager){
         adapter = new Adapter(getChildFragmentManager());
-        TasksFragment tasksFragment = new TasksFragment();
+        addFragment(new DetailsFragment(), "Details",adapter);
+        addFragment(new TasksFragment(), "Tasks",adapter);
+        addFragment(new CommentsFragment(), "Comments",adapter);
+        viewPager.setAdapter(adapter);
+    }
+
+    public void addFragment(Fragment fragment, String title, Adapter adapter){
         Bundle bundle = new Bundle();
         bundle.putString("eventKey",eventKey);
-        tasksFragment.setArguments(bundle);
-
-        adapter.addFragment(new DetailsFragment(), "Details");
-        adapter.addFragment(tasksFragment, "Tasks");
-        adapter.addFragment(new CommentsFragment(), "Comments");
-        viewPager.setAdapter(adapter);
+        fragment.setArguments(bundle);
+        adapter.addFragment(fragment, title);
     }
 
     static class Adapter extends FragmentPagerAdapter {
