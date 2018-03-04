@@ -174,7 +174,8 @@ public class HomeFragment extends Fragment {
                     Group group = new Group(groupName, key, groupCode);
                     group.setGroupMembers(groupMembers);
                     groupArrayList.add(group);
-                    if(adapter.getItemCount()>groupArrayList.size())
+
+                    if(adapter.getItemCount()>=groupArrayList.size())
                         adapter.notifyItemInserted(groupArrayList.size() - 1);
 
 

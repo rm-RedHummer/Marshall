@@ -142,32 +142,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
                     ctr++;
                 else
                     ctr = 1;
-                /*int ctr = 1;
-                ArrayList<String> groupMembers;
-                String groupName;
-                for(DataSnapshot ds: dataSnapshot.getChildren()){
-                    if (ctr == 2) {
-                        int numOfMembers = (int) ds.getChildrenCount();
-                        holder.numOfMembers.setText(String.valueOf(numOfMembers) + " Joined");
-                        for(DataSnapshot dataSnapshot1:ds.getChildren()){
-                            if(dataSnapshot1.getKey().equals(mAuth.getCurrentUser().getUid())){
-                                if(dataSnapshot1.getValue().equals("Member")){
-                                    holder.check.setVisibility(View.INVISIBLE);
-                                    holder.userPosition.setVisibility(View.INVISIBLE);
-                                    holder.userPosition.setText("Member");
-                                } else {
-                                    holder.userPosition.setText("Admin");
-                                }
-                            }
-                        }
-                    }
-                    else if (ctr == 3)
-                        holder.groupName.setText(ds.getValue().toString());
-                    if (ctr < 5)
-                        ctr++;
-                    else
-                        ctr = 1;
-                }*/
+
             }
 
             @Override
@@ -264,6 +239,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
     }
 
     public void showDialog(String name){
+
         MainActivity mainActivity = (MainActivity) context;
         LayoutInflater inflater = mainActivity.getLayoutInflater();
         final View view2 = inflater.inflate(R.layout.dialog_group_options, null);

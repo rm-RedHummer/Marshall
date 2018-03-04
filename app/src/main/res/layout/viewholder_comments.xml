@@ -3,61 +3,64 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/textView15"
-        android:layout_width="102dp"
-        android:layout_height="29dp"
-        android:layout_marginStart="8dp"
+        android:id="@+id/vh_comments_userName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:text="Blanco"
-        android:textColor="@color/material_blue_400"
-        android:textSize="18sp"
+        android:textColor="@color/material_grey_700"
+        android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/divider11"
-        android:layout_width="405dp"
-        android:layout_height="104dp"
-        android:layout_marginTop="100dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerView"
-        app:srcCompat="@android:color/white" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/vh_comments_comment"
+        app:srcCompat="@color/material_grey_300" />
 
     <TextView
-        android:id="@+id/textView18"
-        android:layout_width="wrap_content"
-        android:layout_height="23dp"
-        android:text="February 26, 2018"
-        tools:layout_editor_absoluteX="149dp"
-        tools:layout_editor_absoluteY="50dp" />
-
-    <TextView
-        android:id="@+id/textView19"
-        android:layout_width="69dp"
-        android:layout_height="24dp"
-        android:layout_marginStart="36dp"
-        android:text="Wow"
-        app:layout_constraintStart_toEndOf="@+id/textView15"
-        tools:layout_editor_absoluteY="16dp" />
-
-    <TextView
-        android:id="@+id/textView20"
+        android:id="@+id/vh_comments_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="55 minutes ago"
-        tools:layout_editor_absoluteX="283dp"
-        tools:layout_editor_absoluteY="50dp" />
+        android:layout_marginBottom="2dp"
+        android:layout_marginStart="8dp"
+        android:text="Feb 26, 2018"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/vh_comments_userName"
+        app:layout_constraintStart_toEndOf="@+id/vh_comments_userName" />
+
+    <TextView
+        android:id="@+id/vh_comments_comment"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
+        android:maxLines="100"
+        android:text="WOW"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/vh_comments_userName" />
+
+    <TextView
+        android:id="@+id/vh_comments_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=", 8:15am"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/vh_comments_date"
+        app:layout_constraintStart_toEndOf="@+id/vh_comments_date" />
 </android.support.constraint.ConstraintLayout>
