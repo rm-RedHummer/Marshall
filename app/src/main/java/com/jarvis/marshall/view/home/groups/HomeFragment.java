@@ -122,8 +122,6 @@ public class HomeFragment extends Fragment {
         final HomeAdapter adapter = new HomeAdapter(getContext(),groupArrayList,progressDialog);
         recyclerView.setAdapter(adapter);
 
-
-
         userDA.getGroups(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -178,6 +176,7 @@ public class HomeFragment extends Fragment {
                     groupArrayList.add(group);
                     adapter.notifyItemInserted(groupArrayList.size() - 1);
 
+
                 }
                 if (num < 5)
                     num++;
@@ -189,6 +188,7 @@ public class HomeFragment extends Fragment {
             }
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
+
             }
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
@@ -196,7 +196,43 @@ public class HomeFragment extends Fragment {
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
+
         });
+        /*groupDA.getGroup(ds.getKey().toString()).addValueEventListener(new ValueEventListener() {
+            int num = 1;
+            String key,groupName = null,groupCode=null;
+            ArrayList<String> groupMembers;
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (num == 1)
+                    groupCode = dataSnapshot.getValue().toString();
+                else if (num == 2) {
+                    groupMembers = new ArrayList<String>();
+                    for(DataSnapshot ds:dataSnapshot.getChildren()){
+                        groupMembers.add(ds.getKey().toString());
+                    }
+                }
+                else if (num == 3)
+                    groupName = dataSnapshot.getValue().toString();
+                else if (num == 4) {
+                    key = dataSnapshot.getValue().toString();
+                    Group group = new Group(groupName, key, groupCode);
+                    group.setGroupMembers(groupMembers);
+                    groupArrayList.add(group);
+                    adapter.notifyItemInserted(groupArrayList.size() - 1);
+
+                }
+                if (num < 5)
+                    num++;
+                else
+                    num = 1;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });*/
     }
 
     public void joinGroup(final View mainView){

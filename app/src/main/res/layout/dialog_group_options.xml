@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/dgGroupSettings_groupName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@color/material_grey_300"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
+        android:text="Group Name"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="@android:color/black"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/dgGroupSettings_members"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@color/cardview_light_background"
+        android:text="View Members"
+        android:textAppearance="@style/TextLabel"
+        android:textSize="14sp" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_weight="1"
+        android:adjustViewBounds="false"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        app:srcCompat="@color/material_grey_300" />
+
+    <Button
+        android:id="@+id/dgGroupSettings_editName"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@color/cardview_light_background"
+        android:text="Edit Group Name"
+        android:textAppearance="@style/TextLabel"
+        android:textSize="14sp" />
+
+    <ImageView
+        android:id="@+id/imageView8"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_weight="1"
+        android:adjustViewBounds="false"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        app:srcCompat="@color/material_grey_300" />
+
+    <Button
+        android:id="@+id/dgGroupSettings_report"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@color/cardview_light_background"
+        android:text="View Reports"
+        android:textAppearance="@style/TextLabel"
+        android:textSize="14sp" />
+
+    <ImageView
+        android:id="@+id/imageView12"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_weight="1"
+        android:adjustViewBounds="false"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        app:srcCompat="@color/material_grey_300" />
+
+    <Button
+        android:id="@+id/dgGroupSettings_delete"
+        style="@android:style/Widget.DeviceDefault.Button.Borderless"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@color/cardview_light_background"
+        android:capitalize="none"
+        android:text="Delete"
+        android:textAppearance="@style/TextLabel"
+        android:textSize="14sp" />
+
+    <ImageView
+        android:id="@+id/imageView11"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_weight="1"
+        android:adjustViewBounds="false"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        app:srcCompat="@color/material_grey_300" />
+</LinearLayout>

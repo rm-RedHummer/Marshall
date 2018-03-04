@@ -19,6 +19,9 @@ public class UserDA extends DA {
     public void addGroup(String key, String groupKey){
         rootRef.child(node).child(key).child("userGroup").child(groupKey).setValue("true");
     }
+    public void deleteGroup(String userKey, String groupKey){
+        rootRef.child(node).child(userKey).child("userGroup").child(groupKey).removeValue();
+    }
     public Query getGroups(String key){
         return rootRef.child(node).child(key).child("userGroup");
     }

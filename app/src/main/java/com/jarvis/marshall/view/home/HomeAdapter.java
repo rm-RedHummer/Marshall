@@ -3,10 +3,12 @@ package com.jarvis.marshall.view.home;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
@@ -17,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -30,6 +33,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.jarvis.marshall.MainActivity;
 import com.jarvis.marshall.R;
 import com.jarvis.marshall.dataAccess.GroupDA;
+import com.jarvis.marshall.dataAccess.UserDA;
 import com.jarvis.marshall.model.Group;
 import com.jarvis.marshall.view.home.eventsList.EventsListFragment;
 import com.jarvis.marshall.view.home.groups.HomeFragment;
@@ -43,10 +47,12 @@ import java.util.ArrayList;
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
     private Context context;
     private ArrayList<Group> groupList;
-    private String userPosition;
+    private String userPosition,groupKey,groupPosition;
     private LayoutInflater inflater;
     private GroupDA groupDA;
+    private UserDA userDA;
     private ProgressDialog progressDialog;
+    private AlertDialog optionsDialog;
     private FirebaseAuth mAuth;
     private final ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
 
@@ -56,6 +62,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
         this.groupList = groupList;
         inflater = LayoutInflater.from(context);
         groupDA = new GroupDA();
+        userDA = new UserDA();
         this.progressDialog = progressDialog;
         viewBinderHelper.setOpenOnlyOne(true);
         mAuth = FirebaseAuth.getInstance();
@@ -69,7 +76,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
     }
 
     @Override
-    public void onBindViewHolder(final ListHolder holder, int position) {
+    public void onBindViewHolder(final ListHolder holder, final int position) {
         final Group group = groupList.get(position);
         viewBinderHelper.bind(holder.swipeRevealLayout,group.getKey());
 
@@ -77,6 +84,16 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
             @Override
             public void onClick(View view) {
                 viewEventsList(group.getKey());
+            }
+        });
+
+        holder.constraintLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                showDialog(group.getGroupName());
+                groupKey = group.getKey();
+                groupPosition = String.valueOf(position);
+                return true;
             }
         });
 
@@ -148,26 +165,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
         progressDialog.dismiss();
     }
 
-    public void viewEventsList(String groupKey){
-        MainActivity mainActivity = (MainActivity) context;
-        EventsListFragment eventsListFragment = new EventsListFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString("groupKey",groupKey);
-        bundle.putString("userPosition",userPosition);
-        eventsListFragment.setArguments(bundle);
-
-        FragmentTransaction ft = mainActivity.getSupportFragmentManager().beginTransaction();
-        //ft.add(R.id.main_framelayout, eventsListFragment, "EventsListFragment");
-        ft.setCustomAnimations(R.anim.enter_anim,R.anim.stay_anim,R.anim.stay_anim,R.anim.exit_anim);
-        ft.replace(R.id.main_framelayout, eventsListFragment,groupKey);
-        ft.addToBackStack(groupKey);
-        ft.commit();
-    }
-    public void clearBackStack(){
-        MainActivity mainActivity = (MainActivity) context;
-        final FragmentManager fm = mainActivity.getSupportFragmentManager();
-    }
-
     @Override
     public int getItemCount() { return groupList.size(); }
 
@@ -189,6 +186,107 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
             userPosition = itemView.findViewById(R.id.vh_group_userStatus);
         }
     }
+
+    public void showDialog(String name){
+        MainActivity mainActivity = (MainActivity) context;
+        LayoutInflater inflater = mainActivity.getLayoutInflater();
+        final View view2 = inflater.inflate(R.layout.dialog_group_options, null);
+        optionsDialog = new AlertDialog.Builder(context)
+                .setView(view2)
+                .create();
+        Button viewMembers, delete, editName, viewReports;
+        TextView groupName;
+        viewMembers = view2.findViewById(R.id.dgGroupSettings_members);
+        delete = view2.findViewById(R.id.dgGroupSettings_delete);
+        editName  = view2.findViewById(R.id.dgGroupSettings_editName);
+        viewReports = view2.findViewById(R.id.dgGroupSettings_report);
+        groupName = view2.findViewById(R.id.dgGroupSettings_groupName);
+
+        viewMembers.setOnClickListener(onClickListener);
+        delete.setOnClickListener(onClickListener);
+        editName.setOnClickListener(onClickListener);
+        viewReports.setOnClickListener(onClickListener);
+
+        groupName.setText(name);
+
+        optionsDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                groupKey = "";
+                groupPosition = "";
+            }
+        });
+
+        optionsDialog.show();
+    }
+
+    private View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            switch (view.getId()){
+                case(2131296353): // view members button
+
+                    break;
+                case(213129634): // view reports button
+
+                    break;
+                case(2131296351): // edit group name button
+
+                    break;
+                case(2131296350): // delete group button
+                    deleteGroup();
+                    break;
+
+            }
+        }
+    };
+
+    private void deleteGroup(){
+        final String key = groupKey, position = groupPosition;
+        optionsDialog.dismiss();
+        AlertDialog.Builder dg = new AlertDialog.Builder(context);
+        dg.setMessage(key);
+        dg.show();
+        final AlertDialog dialog = new AlertDialog.Builder(context)
+                .setMessage("Are you sure you want to delete this group?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        groupDA.deleteGroup(key);
+                        userDA.deleteGroup(mAuth.getCurrentUser().getUid(),key);
+                        groupList.remove(Integer.parseInt(position));
+                        notifyItemRemoved(Integer.parseInt(position));
+                        notifyItemRangeChanged(Integer.parseInt(position), groupList.size());
+
+
+                    }
+                }) //Set to null. We override the onclick
+                .setNegativeButton("No", null)
+                .create();
+        dialog.show();
+    }
+
+    public void viewEventsList(String groupKey){
+        MainActivity mainActivity = (MainActivity) context;
+        EventsListFragment eventsListFragment = new EventsListFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("groupKey",groupKey);
+        bundle.putString("userPosition",userPosition);
+        eventsListFragment.setArguments(bundle);
+
+        FragmentTransaction ft = mainActivity.getSupportFragmentManager().beginTransaction();
+        //ft.add(R.id.main_framelayout, eventsListFragment, "EventsListFragment");
+        ft.setCustomAnimations(R.anim.enter_anim,R.anim.stay_anim,R.anim.stay_anim,R.anim.exit_anim);
+        ft.replace(R.id.main_framelayout, eventsListFragment,groupKey);
+        ft.addToBackStack(groupKey);
+        ft.commit();
+    }
+    public void clearBackStack(){
+        MainActivity mainActivity = (MainActivity) context;
+        final FragmentManager fm = mainActivity.getSupportFragmentManager();
+    }
+
+
 
 
 }
