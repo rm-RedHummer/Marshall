@@ -27,6 +27,7 @@ import com.chauthai.swipereveallayout.SwipeRevealLayout;
 import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -114,7 +115,82 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
                 dg.show();
             }
         });
-        groupDA.getGroup(group.getKey()).addValueEventListener(new ValueEventListener() {
+        groupDA.getGroup(group.getKey()).addChildEventListener(new ChildEventListener() {
+            int ctr = 1;
+            ArrayList<String> groupMembers;
+            String groupName;
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                if (ctr == 2) {
+                    int numOfMembers = (int) dataSnapshot.getChildrenCount();
+                    holder.numOfMembers.setText(String.valueOf(numOfMembers) + " Joined");
+                    for(DataSnapshot dataSnapshot1:dataSnapshot.getChildren()){
+                        if(dataSnapshot1.getKey().equals(mAuth.getCurrentUser().getUid())){
+                            if(dataSnapshot1.getValue().equals("Member")){
+                                holder.check.setVisibility(View.INVISIBLE);
+                                holder.userPosition.setVisibility(View.INVISIBLE);
+                                holder.userPosition.setText("Member");
+                            } else {
+                                holder.userPosition.setText("Admin");
+                            }
+                        }
+                    }
+                }
+                else if (ctr == 3)
+                    holder.groupName.setText(dataSnapshot.getValue().toString());
+                if (ctr < 5)
+                    ctr++;
+                else
+                    ctr = 1;
+                /*int ctr = 1;
+                ArrayList<String> groupMembers;
+                String groupName;
+                for(DataSnapshot ds: dataSnapshot.getChildren()){
+                    if (ctr == 2) {
+                        int numOfMembers = (int) ds.getChildrenCount();
+                        holder.numOfMembers.setText(String.valueOf(numOfMembers) + " Joined");
+                        for(DataSnapshot dataSnapshot1:ds.getChildren()){
+                            if(dataSnapshot1.getKey().equals(mAuth.getCurrentUser().getUid())){
+                                if(dataSnapshot1.getValue().equals("Member")){
+                                    holder.check.setVisibility(View.INVISIBLE);
+                                    holder.userPosition.setVisibility(View.INVISIBLE);
+                                    holder.userPosition.setText("Member");
+                                } else {
+                                    holder.userPosition.setText("Admin");
+                                }
+                            }
+                        }
+                    }
+                    else if (ctr == 3)
+                        holder.groupName.setText(ds.getValue().toString());
+                    if (ctr < 5)
+                        ctr++;
+                    else
+                        ctr = 1;
+                }*/
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        /*groupDA.getGroup(group.getKey()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 int ctr = 1;
@@ -149,7 +225,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+        });*/
         userPosition = holder.userPosition.getText().toString();
         final int  width = Resources.getSystem().getDisplayMetrics().widthPixels;
         holder.constraintLayout.post(new Runnable() {
@@ -202,10 +278,30 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
         viewReports = view2.findViewById(R.id.dgGroupSettings_report);
         groupName = view2.findViewById(R.id.dgGroupSettings_groupName);
 
-        viewMembers.setOnClickListener(onClickListener);
-        delete.setOnClickListener(onClickListener);
-        editName.setOnClickListener(onClickListener);
-        viewReports.setOnClickListener(onClickListener);
+        viewMembers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteGroup();
+            }
+        });
+        editName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        viewReports.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
 
         groupName.setText(name);
 
@@ -219,27 +315,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
 
         optionsDialog.show();
     }
-
-    private View.OnClickListener onClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            switch (view.getId()){
-                case(2131296353): // view members button
-
-                    break;
-                case(213129634): // view reports button
-
-                    break;
-                case(2131296351): // edit group name button
-
-                    break;
-                case(2131296350): // delete group button
-                    deleteGroup();
-                    break;
-
-            }
-        }
-    };
 
     private void deleteGroup(){
         final String key = groupKey, position = groupPosition;
