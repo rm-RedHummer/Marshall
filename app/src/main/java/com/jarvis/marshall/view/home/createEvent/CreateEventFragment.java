@@ -28,6 +28,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.jarvis.marshall.R;
 import com.jarvis.marshall.dataAccess.EventDA;
 import com.jarvis.marshall.model.Event;
+import com.jarvis.marshall.view.home.eventsList.EventsListAdapter;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,7 +39,8 @@ import java.util.Calendar;
 public class CreateEventFragment extends Fragment implements View.OnClickListener{
     private Button descriptionBtn,dateBtn,startTimeBtn,endTimeBtn,venueBtn,membersBtn,cancelBtn,saveBtn;
     private TextInputEditText eventNameEditText;
-    private String groupKey,eventName=null,eventKey,description=null,date="",startTime="",endTime="",venue="",status,tag;
+    private String groupKey="",eventName="",eventKey="",description="",date="",startTime="",endTime="",venue="",status,tag,eventLeaderUserKey="";
+    private ArrayList<String> eventMembersKey;
     private Integer rawStartHour, rawStartMinute,rawEndHour,rawEndMinute,rawYear,rawMonth,rawDay;
     private FirebaseAuth mAuth;
     private FragmentManager fm;
@@ -87,7 +89,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                 showVenueDialog();
                 break;
             case R.id.actCreateEvent_membersBtn:
-                if(eventName!=null)
+                if(!eventName.equals(""))
                     dataBundle.putExtra("eventName",eventName);
                 changeFragment(new SelectEventLeaderFragment(), "SelectEventLeaderFragment");
                 break;
@@ -97,26 +99,42 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
             case R.id.actCreateEvent_saveBtn:
                 createEvent();
 
-                back();
+
                 break;
         }
     }
 
     public void createEvent(){
-        final DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference().getRoot().child("event");
-        eventKey = rootRef.push().getKey();
-        eventName = eventNameEditText.getText().toString();
-        status = "On preparation";
-        Event event = new Event(eventName,date,startTime,endTime,venue,description,status,eventKey,groupKey);
-        EventDA eventDA = new EventDA();
-        eventDA.createNewEvent(event);
-        String eventLeaderUserKey = dataBundle.getExtras().getString("eventLeaderUserKey");
-        ArrayList<String> eventMembersKey = dataBundle.getExtras().getStringArrayList("eventMembersArrayList");
-        eventDA.addEventMember(eventKey,eventLeaderUserKey,"Manager");
-        for(int ctr = 0 ; ctr < eventMembersKey.size(); ctr++){
-            eventDA.addEventMember(eventKey,eventMembersKey.get(ctr),"Member");
+        if(dataBundle.getExtras().getString("eventLeaderUserKey")!=null) {
+            eventLeaderUserKey = dataBundle.getExtras().getString("eventLeaderUserKey");
         }
+        if(dataBundle.getExtras().getStringArrayList("eventMembersArrayList")!=null)
+            eventMembersKey = dataBundle.getExtras().getStringArrayList("eventMembersArrayList");
+        if(!eventNameEditText.getText().toString().isEmpty())
+            eventName = eventNameEditText.getText().toString();
+        if(eventName.equals("")||date.equals("")||startTime.equals("")||endTime.equals("")||venue.equals("")||description.equals("")
+                ||eventLeaderUserKey.equals("")) {
+            AlertDialog.Builder dg = new AlertDialog.Builder(getContext());
+            dg.setMessage("Please enter all required information.");
+            dg.setPositiveButton("OK",null);
+            dg.show();
+        } else {
+            final DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference().getRoot().child("event");
+            eventKey = rootRef.push().getKey();
+            status = "On preparation";
+            Event event = new Event(eventName,date,startTime,endTime,venue,description,status,eventKey,groupKey);
+            EventDA eventDA = new EventDA();
+            eventDA.createNewEvent(event);
 
+
+            eventDA.addEventMember(eventKey,eventLeaderUserKey,"Manager");
+            if(dataBundle.getExtras().getStringArrayList("eventMembersArrayList")!=null){
+                for(int ctr = 0 ; ctr < eventMembersKey.size(); ctr++){
+                    eventDA.addEventMember(eventKey,eventMembersKey.get(ctr),"Member");
+                }
+            }
+            back();
+        }
     }
 
     public void changeFragment(Fragment fragment, String tag){
@@ -343,12 +361,6 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         createEventActivity.navigateUpTo(createEventActivity.getIntent());
         createEventActivity.finish();
         createEventActivity.overridePendingTransition(R.anim.stay_anim,R.anim.exit_anim);
-    }
-
-    private void onChangeFragment(){
-        if(description!=null){
-            getActivity().getIntent().putExtra("description",description);
-        }
     }
 
 

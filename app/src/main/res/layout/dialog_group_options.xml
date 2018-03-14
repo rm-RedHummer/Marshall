@@ -32,27 +32,7 @@
         android:textSize="14sp" />
 
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_weight="1"
-        android:adjustViewBounds="false"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        app:srcCompat="@color/material_grey_300" />
-
-    <Button
-        android:id="@+id/dgGroupSettings_editName"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:background="@color/cardview_light_background"
-        android:text="Edit Group Name"
-        android:textAppearance="@style/TextLabel"
-        android:textSize="14sp" />
-
-    <ImageView
-        android:id="@+id/imageView8"
+        android:id="@+id/dgGroupSettings_lineMembers"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_weight="1"
@@ -73,7 +53,28 @@
         android:textSize="14sp" />
 
     <ImageView
-        android:id="@+id/imageView12"
+        android:id="@+id/dgGroupSettings_lineReports"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_weight="1"
+        android:adjustViewBounds="false"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        app:srcCompat="@color/material_grey_300" />
+
+    <Button
+        android:id="@+id/dgGroupSettings_editName"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@color/cardview_light_background"
+        android:text="Edit Group Name"
+        android:textAppearance="@style/TextLabel"
+        android:textSize="14sp" />
+
+    <ImageView
+        android:id="@+id/dgGroupSettings_lineEditName"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_weight="1"
@@ -93,14 +94,4 @@
         android:text="Delete"
         android:textAppearance="@style/TextLabel"
         android:textSize="14sp" />
-
-    <ImageView
-        android:id="@+id/imageView11"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_weight="1"
-        android:adjustViewBounds="false"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        app:srcCompat="@color/material_grey_300" />
 </LinearLayout>

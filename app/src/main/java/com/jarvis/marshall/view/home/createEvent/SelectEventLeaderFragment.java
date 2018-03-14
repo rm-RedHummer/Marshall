@@ -35,7 +35,7 @@ public class SelectEventLeaderFragment extends Fragment implements View.OnClickL
     private Button backBtn,saveBtn;
     private FragmentManager fm;
     private SelectEventLeaderAdapter adapter;
-    private ArrayList<String> userKeyList;
+    private ArrayList<String> userKeyList,stringArrayList;
 
     public SelectEventLeaderFragment(){
         // Required empty public constructor
@@ -68,7 +68,7 @@ public class SelectEventLeaderFragment extends Fragment implements View.OnClickL
 
     public void loadSelectEventLeaderRecyclerView(){
         userKeyList = new ArrayList<>();
-        final ArrayList<String> stringArrayList = new ArrayList<>();
+        stringArrayList = new ArrayList<>();
         adapter = new SelectEventLeaderAdapter(getContext(),stringArrayList);
         recyclerView.setAdapter(adapter);
         groupDA.getGroupMembers(groupKey).addValueEventListener(new ValueEventListener() {
@@ -103,17 +103,25 @@ public class SelectEventLeaderFragment extends Fragment implements View.OnClickL
     public void onClick(View view) {
         switch (view.getId()){
             case(R.id.fragSelectEventLeader_confirmBtn):
-                SelectMembersFragment fragment = new SelectMembersFragment();
-                FragmentTransaction ft = fm.beginTransaction();
-                String tag = "SelectEventMembers";
-                getActivity().getIntent().putExtra("eventLeaderUserKey",userKeyList.get(adapter.getCheckedButton()));
-                ft.replace(R.id.actCreateEvent_frameLayout,fragment,tag);
-                ft.setCustomAnimations(R.anim.enter_anim,R.anim.stay_anim,R.anim.stay_anim,R.anim.exit_anim);
-                ft.addToBackStack(tag);
-                ft.commit();
+                if(stringArrayList.size()==1){
+                    getActivity().getIntent().putExtra("eventLeaderUserKey",userKeyList.get(adapter.getCheckedButton()));
+                    fm.popBackStackImmediate();
+                } else {
+                    SelectMembersFragment fragment = new SelectMembersFragment();
+                    FragmentTransaction ft = fm.beginTransaction();
+                    String tag = "SelectEventMembers";
+                    getActivity().getIntent().putExtra("eventLeaderUserKey",userKeyList.get(adapter.getCheckedButton()));
+                    ft.replace(R.id.actCreateEvent_frameLayout,fragment,tag);
+                    ft.setCustomAnimations(R.anim.enter_anim,R.anim.stay_anim,R.anim.stay_anim,R.anim.exit_anim);
+                    ft.addToBackStack(tag);
+                    ft.commit();
+                }
                 break;
             case(R.id.fragSelectEventLeader_backBtn):
-                fm.popBackStackImmediate();
+                AlertDialog.Builder dg = new AlertDialog.Builder(getContext());
+                dg.setMessage(String.valueOf(stringArrayList.size()));
+                dg.show();
+                //fm.popBackStackImmediate();
                 break;
         }
     }

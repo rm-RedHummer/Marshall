@@ -153,30 +153,41 @@ public class HomeFragment extends Fragment {
     public void loadToRecyclerView(DataSnapshot ds, final HomeAdapter adapter, final ArrayList<Group>
             groupArrayList){
         String userPosition=null;
+
         groupDA.getGroup(ds.getKey().toString()).addChildEventListener(new ChildEventListener() {
             int num = 1;
             String key,groupName = null,groupCode=null;
             ArrayList<String> groupMembers;
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+            }
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 if (num == 1)
                     groupCode = dataSnapshot.getValue().toString();
                 else if (num == 2) {
                     groupMembers = new ArrayList<String>();
-                    for(DataSnapshot ds:dataSnapshot.getChildren()){
-                        groupMembers.add(ds.getKey().toString());
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        groupMembers.add(ds.getKey().toString() + ":" + ds.getValue());
                     }
-                }
-                else if (num == 3)
+                } else if (num == 3)
                     groupName = dataSnapshot.getValue().toString();
                 else if (num == 4) {
                     key = dataSnapshot.getValue().toString();
                     Group group = new Group(groupName, key, groupCode);
                     group.setGroupMembers(groupMembers);
                     groupArrayList.add(group);
-
-                    if(adapter.getItemCount()>=groupArrayList.size())
+                    adapter.notifyItemInserted(groupArrayList.size() - 1);
+                    /*if (adapter.getItemCount() >= groupArrayList.size()&&adapter.getIsDeleted()==false)
                         adapter.notifyItemInserted(groupArrayList.size() - 1);
+                    else if(adapter.getIsDeleted()==true)
+                        adapter.setIsDeleted();*/
+
 
 
                 }
@@ -184,16 +195,12 @@ public class HomeFragment extends Fragment {
                     num++;
                 else
                     num = 1;
-            }
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-            }
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
 
             }
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -255,31 +262,36 @@ public class HomeFragment extends Fragment {
                     public void onClick(final View view) {
                         final EditText groupCodeEditText = view2.findViewById(R.id.dg_et_group_code);
                         final String groupCode = groupCodeEditText.getText().toString();
-                        groupDA.checkGroupCode(groupCode).addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                if(dataSnapshot.getValue()!=null){
-                                    String key = "";
-                                    for(DataSnapshot ds : dataSnapshot.getChildren()){
-                                        key = ds.child("key").getValue().toString();
+                        if(groupCodeEditText.getText().toString().isEmpty()
+                                ){
+                            Snackbar.make(view, "Please enter a group code.", Snackbar.LENGTH_LONG)
+                                    .setAction("Action", null).show();
+                        } else {
+                            groupDA.checkGroupCode(groupCode).addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if(dataSnapshot.getValue()!=null){
+                                        String key = "";
+                                        for(DataSnapshot ds : dataSnapshot.getChildren()){
+                                            key = ds.child("key").getValue().toString();
+                                        }
+                                        userDA.addGroup(mAuth.getCurrentUser().getUid(),key);
+                                        groupDA.addUserToGroup(mAuth.getCurrentUser().getUid(),key,"Member");
+                                        dialog.dismiss();
+                                        Snackbar.make(mainView, "Group successfully joined", Snackbar.LENGTH_LONG)
+                                                .setAction("Action", null).show();
+                                    } else {
+                                        Snackbar.make(view, "Group code does not exist.", Snackbar.LENGTH_LONG)
+                                                .setAction("Action", null).show();
                                     }
-                                    userDA.addGroup(mAuth.getCurrentUser().getUid(),key);
-                                    groupDA.addUserToGroup(mAuth.getCurrentUser().getUid(),key,"Member");
-                                    dialog.dismiss();
-                                    Snackbar.make(mainView, "Group successfully joined", Snackbar.LENGTH_LONG)
-                                            .setAction("Action", null).show();
-                                } else {
-                                    Snackbar.make(view, "Group code does not exist.", Snackbar.LENGTH_LONG)
-                                            .setAction("Action", null).show();
                                 }
-                            }
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
 
-                            }
-                        });
-
+                                }
+                            });
+                        }
                     }
                 });
             }
@@ -307,30 +319,35 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onClick(final View view) {
                         final EditText groupName = view2.findViewById(R.id.editText_group_name);
-                        groupDA.checkGroupNames(groupName.getText().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                if (dataSnapshot.getValue() != null) {
+                        if(groupName.getText().toString().isEmpty()){
+                            Snackbar.make(view, "Please enter group name.", Snackbar.LENGTH_LONG)
+                                    .setAction("Action", null).show();
+                        } else {
+                            groupDA.checkGroupNames(groupName.getText().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.getValue() != null) {
 
-                                    Snackbar.make(view, "Group name is already taken.", Snackbar.LENGTH_LONG)
-                                            .setAction("Action", null).show();
-                                } else {
-                                    dialog.dismiss();
-                                    final DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference().getRoot().child("group");
-                                    final String key = rootRef.push().getKey();
-                                    final String groupCode = key.substring(key.length()-7,key.length()-1);
-                                    final Group group = new Group(groupName.getText().toString(), key, groupCode);
-                                    groupDA.createNewGroup(group);
-                                    userDA.addGroup(mAuth.getCurrentUser().getUid(),key);
-                                    groupDA.addUserToGroup(mAuth.getCurrentUser().getUid(),key,"Admin");
-                                    Snackbar.make(mainView, "The group is successfully created.", Snackbar.LENGTH_LONG)
-                                            .setAction("Action", null).show();
+                                        Snackbar.make(view, "Group name is already taken.", Snackbar.LENGTH_LONG)
+                                                .setAction("Action", null).show();
+                                    } else {
+                                        dialog.dismiss();
+                                        final DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference().getRoot().child("group");
+                                        final String key = rootRef.push().getKey();
+                                        final String groupCode = key.substring(key.length()-7,key.length()-1);
+                                        final Group group = new Group(groupName.getText().toString(), key, groupCode);
+                                        groupDA.createNewGroup(group);
+                                        userDA.addGroup(mAuth.getCurrentUser().getUid(),key);
+                                        groupDA.addUserToGroup(mAuth.getCurrentUser().getUid(),key,"Admin");
+                                        Snackbar.make(mainView, "The group is successfully created.", Snackbar.LENGTH_LONG)
+                                                .setAction("Action", null).show();
+                                    }
                                 }
-                            }
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                            }
-                        });
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                }
+                            });
+                        }
                     }
                 });
             }
