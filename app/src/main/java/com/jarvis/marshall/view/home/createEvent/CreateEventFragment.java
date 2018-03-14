@@ -66,6 +66,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         wireViews();
         initializeDataToList();
 
+        
         return view;
     }
 
@@ -353,6 +354,8 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         membersBtn.setOnClickListener(this);
         cancelBtn.setOnClickListener(this);
         saveBtn.setOnClickListener(this);
+
+
     }
 
     @SuppressLint("NewApi")

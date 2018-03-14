@@ -113,14 +113,16 @@ public class SelectMembersFragment extends Fragment implements View.OnClickListe
     }
 
     public void setEventMembers(){
-        ArrayList<String> membersList = adapter.getChecked();
-        ArrayList<String> memberKeyList = new ArrayList<>();
-        for(int ctr = 0; ctr< membersList.size(); ctr++){
-            memberKeyList.add(userKeyArrrayList.get(Integer.parseInt(membersList.get(ctr))));
-        }
+        if(adapter.getChecked().size()!=0){
+            ArrayList<String> membersList = adapter.getChecked();
+            ArrayList<String> memberKeyList = new ArrayList<>();
+            for(int ctr = 0; ctr< membersList.size(); ctr++){
+                memberKeyList.add(userKeyArrrayList.get(Integer.parseInt(membersList.get(ctr))));
+            }
 
-        getActivity().getIntent().putExtra("eventLeaderUserKey",eventLeaderKey);
-        getActivity().getIntent().putExtra("eventMembersArrayList",memberKeyList);
+            getActivity().getIntent().putExtra("eventLeaderUserKey",eventLeaderKey);
+            getActivity().getIntent().putExtra("eventMembersArrayList",memberKeyList);
+        }
         fm.popBackStackImmediate();
         fm.popBackStackImmediate();
     }

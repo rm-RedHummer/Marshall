@@ -118,10 +118,7 @@ public class SelectEventLeaderFragment extends Fragment implements View.OnClickL
                 }
                 break;
             case(R.id.fragSelectEventLeader_backBtn):
-                AlertDialog.Builder dg = new AlertDialog.Builder(getContext());
-                dg.setMessage(String.valueOf(stringArrayList.size()));
-                dg.show();
-                //fm.popBackStackImmediate();
+                fm.popBackStackImmediate();
                 break;
         }
     }

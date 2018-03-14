@@ -47,6 +47,9 @@ public class SelectEventLeaderAdapter extends RecyclerView.Adapter<SelectEventLe
         holder.name.setText(name);
         holder.radioButton.setOnCheckedChangeListener(ls);
         holder.radioButton.setTag(position);
+        if(position==0){
+            holder.radioButton.setChecked(true);
+        }
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
