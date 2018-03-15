@@ -7,3 +7,5 @@ app\app.iml
 /captures
 .externalNativeBuild
 *.gradle
+*.iml
+*.iml

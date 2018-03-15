@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/dgEventSettings_eventName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@color/material_grey_300"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
+        android:text="Event Name"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="@android:color/black"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/dgEventSettings_members"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@color/cardview_light_background"
+        android:text="View Members"
+        android:textAppearance="@style/TextLabel"
+        android:textSize="14sp" />
+
+    <ImageView
+        android:id="@+id/dgEventSettings_lineMembers"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_weight="1"
+        android:adjustViewBounds="false"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        app:srcCompat="@color/material_grey_300" />
+
+    <Button
+        android:id="@+id/dgEventSettings_report"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@color/cardview_light_background"
+        android:text="View Reports"
+        android:textAppearance="@style/TextLabel"
+        android:textSize="14sp" />
+
+    <ImageView
+        android:id="@+id/dgEventSettings_lineReports"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_weight="1"
+        android:adjustViewBounds="false"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        app:srcCompat="@color/material_grey_300" />
+
+    <Button
+        android:id="@+id/dgEventSettings_editEvent"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@color/cardview_light_background"
+        android:text="Edit Event"
+        android:textAppearance="@style/TextLabel"
+        android:textSize="14sp" />
+
+    <ImageView
+        android:id="@+id/dgEventSettings_lineEditName"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_weight="1"
+        android:adjustViewBounds="false"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        app:srcCompat="@color/material_grey_300" />
+
+    <Button
+        android:id="@+id/dgEventSettings_delete"
+        style="@android:style/Widget.DeviceDefault.Button.Borderless"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@color/cardview_light_background"
+        android:capitalize="none"
+        android:text="Delete"
+        android:textAppearance="@style/TextLabel"
+        android:textSize="14sp" />
+</LinearLayout>
