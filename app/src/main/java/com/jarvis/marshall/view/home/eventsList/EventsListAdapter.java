@@ -2,6 +2,7 @@ package com.jarvis.marshall.view.home.eventsList;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.FragmentTransaction;
@@ -60,7 +61,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Li
     }
 
     @Override
-    public void onBindViewHolder(final ListHolder holder, int position) {
+    public void onBindViewHolder(final ListHolder holder, final int position) {
         final Event event = eventArrayList.get(position);
         viewBinderHelper.bind(holder.swipeRevealLayout,event.getKey());
 
@@ -68,6 +69,23 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Li
             @Override
             public void onClick(View view) {
                 viewEvent(event.getKey());
+            }
+        });
+
+        holder.layout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                String userPos = "";
+                if(!userPosition.equals("Admin")){
+                    for(int ctr = 0; ctr<event.getEventMembers().size(); ctr++){
+                        String[] split = event.getEventMembers().get(ctr).split(":");
+                        if(split[0].equals(mAuth.getCurrentUser().getUid().toString()))
+                            userPos = split[1];
+                    }
+                }
+
+                showDialog(event.getName(),userPos,event.getKey(),position);
+                return false;
             }
         });
 
@@ -215,6 +233,65 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Li
             swipeRevealLayout = itemView.findViewById(R.id.vh_events_list_swipe_reveal_layout);
             layout = itemView.findViewById(R.id.vh_events_list_constraint);
         }
+    }
+
+    private void showDialog(String eventName, String userPos, final String eventKey, final int position){
+        MainActivity mainActivity = (MainActivity) context;
+        LayoutInflater inflater = mainActivity.getLayoutInflater();
+        final View view2 = inflater.inflate(R.layout.dialog_events_options, null);
+        final AlertDialog optionsDialog = new AlertDialog.Builder(context)
+                .setView(view2)
+                .create();
+
+        TextView title = view2.findViewById(R.id.dgEventSettings_eventName);
+        Button viewMembers = view2.findViewById(R.id.dgEventSettings_members);
+        Button reports = view2.findViewById(R.id.dgEventSettings_report);
+        Button delete = view2.findViewById(R.id.dgEventSettings_delete);
+        Button edit = view2.findViewById(R.id.dgEventSettings_editEvent);
+        ImageView membersLine = view2.findViewById(R.id.dgEventSettings_lineMembers);
+        ImageView reportsLine  = view2.findViewById(R.id.dgEventSettings_lineReports);
+        ImageView editLine  = view2.findViewById(R.id.dgEventSettings_lineEditName);
+        title.setText(eventName);
+
+        if(userPos.equals("Member")){
+            reports.setVisibility(View.GONE);
+            delete.setVisibility(View.GONE);
+            edit.setVisibility(View.GONE);
+            membersLine.setVisibility(View.GONE);
+            reportsLine.setVisibility(View.GONE);
+            editLine.setVisibility(View.GONE);
+        }
+
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteEvent(eventKey,position,optionsDialog);
+            }
+        });
+
+        optionsDialog.show();
+    }
+
+    private void deleteEvent(final String eventKey, final int position, AlertDialog dg){
+        dg.dismiss();
+
+        final AlertDialog dialog = new AlertDialog.Builder(context)
+                .setMessage("Are you sure you want to delete this event?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        eventDA.deleteEvent(eventKey);
+                        eventArrayList.remove(position);
+                        notifyItemRemoved(position);
+
+                        //notifyItemRangeChanged(Integer.parseInt(position), groupList.size());
+
+
+                    }
+                }) //Set to null. We override the onclick
+                .setNegativeButton("No", null)
+                .create();
+        dialog.show();
     }
 
     private String processDate(String date){
