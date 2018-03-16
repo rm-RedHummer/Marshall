@@ -22,6 +22,8 @@ import com.jarvis.marshall.model.Task;
 import com.jarvis.marshall.view.home.createTask.CreateTaskActivity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -72,68 +74,77 @@ public class TasksFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         TaskDA taskDA = new TaskDA();
 
-        /*taskDA.getEventTasks(eventKey).addChildEventListener(new ChildEventListener() {
+        taskDA.getEventTasks(eventKey).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                int ctr = 0;
+
+                int ctr = 1;
                 String date=null, details=null, time=null, eventKey=null, key=null, name=null, remarks=null, status=null;
                 for(DataSnapshot ds: dataSnapshot.getChildren()){
                     switch (ctr){
-                        case(0):
+                        case(1):
                             date = ds.getValue().toString();
                             break;
-                        case(1):
+                        case(2):
                             time = ds.getValue().toString();
                             break;
-                        case(2):
+                        case(3):
                             details = ds.getValue().toString();
                             break;
-                        case(3):
+                        case(4):
                             eventKey = ds.getValue().toString();
                             break;
-                        case(4):
+                        case(5):
                             key = ds.getValue().toString();
                             break;
-                        case(5):
+                        case(6):
                             name = ds.getValue().toString();
                             break;
-                        case(6):
+                        case(7):
                             remarks = ds.getValue().toString();
                             break;
-                        case(7):
+                        case(8):
                             status = ds.getValue().toString();
                             break;
-                        case(8):
-                            ArrayList<String> memberList = new ArrayList<>();
+                        case(9):
+                            Map map = new HashMap();
                             for(DataSnapshot dataSnapshot1: ds.getChildren()){
-                                memberList.add(dataSnapshot1.getKey()+":"+dataSnapshot1.getValue());
+                                map.put(dataSnapshot1.getKey().toString(),dataSnapshot1.getValue().toString());
+
                             }
                             Task task = new Task(key, eventKey,name,details,date,status,time,remarks);
-                            task.setMembers(memberList);
+                            task.setTaskMembers(map);
                             taskArrayList.add(task);
                             adapter.notifyItemInserted(taskArrayList.size() - 1);
                             break;
                     }
-                    if(ctr<9)
+                    if(ctr<=9)
                         ctr++;
                     else
-                        ctr = 0;
+                        ctr = 1;
                 }
             }
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                AlertDialog.Builder dg = new AlertDialog.Builder(getContext());
+                dg.setMessage("change");
+                dg.show();
             }
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
+                AlertDialog.Builder dg = new AlertDialog.Builder(getContext());
+                dg.setMessage("remove");
+                dg.show();
             }
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
-        });*/
-        taskDA.getEventTasks(eventKey).addValueEventListener(new ValueEventListener() {
+        });
+        /*taskDA.getEventTasks(eventKey).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapShot) {
                 for(DataSnapshot dataSnapshot: dataSnapShot.getChildren()){
@@ -188,7 +199,7 @@ public class TasksFragment extends Fragment {
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+        }); */
     }
 
     private void createTask(){

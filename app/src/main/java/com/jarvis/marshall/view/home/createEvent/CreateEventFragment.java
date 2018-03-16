@@ -66,7 +66,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         wireViews();
         initializeDataToList();
 
-        
+
         return view;
     }
 

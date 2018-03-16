@@ -1,6 +1,7 @@
 package com.jarvis.marshall.view.home.task;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,14 +37,26 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListHolder> {
     }
 
     @Override
-    public void onBindViewHolder(ListHolder holder, int position) {
-        Task task = taskArrayList.get(position);
-        TaskDA taskDA = new TaskDA();
+    public void onBindViewHolder(final ListHolder holder, int position) {
+        final Task task = taskArrayList.get(position);
+        final TaskDA taskDA = new TaskDA();
 
         holder.title.setText(task.getName());
+        if(task.getStatus().equals("Task done")){
+            holder.check.setColorFilter(context.getResources().getColor(R.color.colorPrimary));
+        }
         holder.status.setText(task.getStatus());
+
         holder.date.setText(task.getDeadlineDate());
         holder.time.setText(task.getDeadlineTime());
+
+        holder.check.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.check.setColorFilter(context.getResources().getColor(R.color.colorPrimary));
+                taskDA.setStatus(task.getKey(),"Task done");
+            }
+        });
     }
 
     @Override

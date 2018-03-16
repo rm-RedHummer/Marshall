@@ -29,6 +29,8 @@ import com.jarvis.marshall.view.home.createEvent.CreateEventActivity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,10 +39,11 @@ public class CreateTaskFragment extends Fragment implements View.OnClickListener
     private View view;
     private Button detailsBtn, dateBtn, timeBtn, membersBtn, cancelBtn,saveBtn;
     private EditText taskTitleEditText;
-    private String details, date, time,taskTitle=null, taskKey,status,eventKey,remarks;
+    private String details="", date="", time="",taskTitle="", taskKey,status,eventKey,remarks;
     private Integer rawYear,rawMonth,rawDay,rawHour,rawMinute;
     private Intent dataBundle;
     private FragmentManager fm;
+    private TaskDA taskDA;
 
     public CreateTaskFragment() {
         // Required empty public constructor
@@ -55,6 +58,7 @@ public class CreateTaskFragment extends Fragment implements View.OnClickListener
         eventKey = dataBundle.getExtras().getString("eventKey");
         fm = getActivity().getSupportFragmentManager();
         view = inflater.inflate(R.layout.fragment_create_task, container, false);
+        taskDA = new TaskDA();
         wireViews();
         initializeDataToViews();
 
@@ -81,27 +85,44 @@ public class CreateTaskFragment extends Fragment implements View.OnClickListener
                 break;
             case(R.id.actCreateTask_cancelBtn):
                 back();
+
                 break;
             case(R.id.actCreateTask_saveBtn):
                 createTask();
-                back();
+
                 break;
         }
     }
 
     public void createTask(){
-        final DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference().getRoot().child("task");
-        taskKey = rootRef.push().getKey();
-        taskTitle = taskTitleEditText.getText().toString();
-        status = "undone";
-        remarks = "none";
-        Task task = new Task(taskKey,eventKey,taskTitle,details,date,status,time,remarks);
-        ArrayList<String> taskMemberKeyList = dataBundle.getExtras().getStringArrayList("taskMembersArrayList");
-        ArrayList<String> taskMemberNameList = dataBundle.getExtras().getStringArrayList("taskMembersNamesArrayList");
-        TaskDA taskDA = new TaskDA();
-        taskDA.createNewTask(task);
-        for(int ctr = 0 ; ctr < taskMemberNameList.size(); ctr++){
-            taskDA.addTaskMember(taskKey,taskMemberKeyList.get(ctr),taskMemberNameList.get(ctr));
+        Boolean isArrayListEmpty = true;
+        ArrayList<String> taskMemberKeyList= new ArrayList<>(),taskMemberNameList= new ArrayList<>();
+        if(dataBundle.getExtras().getStringArrayList("taskMembersArrayList")!=null){
+            taskMemberKeyList = dataBundle.getExtras().getStringArrayList("taskMembersArrayList");
+            taskMemberNameList = dataBundle.getExtras().getStringArrayList("taskMembersNamesArrayList");
+            isArrayListEmpty = false;
+        }
+        if(!taskTitleEditText.getText().toString().isEmpty())
+            taskTitle = taskTitleEditText.getText().toString();
+
+        if(taskTitle.equals("")||details.equals("")||date.equals("")||time.equals("")||isArrayListEmpty==true){
+            AlertDialog.Builder dg = new AlertDialog.Builder(getContext());
+            dg.setMessage("Please enter all required information.");
+            dg.setPositiveButton("OK",null);
+            dg.show();
+        } else {
+            final DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference().getRoot().child("task");
+            taskKey = rootRef.push().getKey();
+            status = "Undone";
+            remarks = "none";
+            Task task = new Task(taskKey,eventKey,taskTitle,details,date,status,time,remarks);
+            Map map = new HashMap();
+            for(int ctr = 0 ; ctr < taskMemberNameList.size(); ctr++){
+                map.put(taskMemberKeyList.get(ctr),taskMemberNameList.get(ctr));
+            }
+            task.setTaskMembers(map);
+            taskDA.createNewTask(task);
+            back();
         }
     }
 
