@@ -105,8 +105,7 @@ public class EventsListFragment extends Fragment {
         final String tempEventKey = "";
         eventDA.getAllEvents(groupKey).addChildEventListener(new ChildEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 if(dataSnapshot.getValue()!= null){
                     int num = 1;
                     String date=null, description=null, endTime=null, groupKey=null, key=null, name=null, startTime=null,status=null,venue=null;
@@ -163,63 +162,65 @@ public class EventsListFragment extends Fragment {
             String temp = "";
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                int ctr = 1;
-                String tempKey = "";
-                for(DataSnapshot ds2: dataSnapshot.getChildren()){
-                    if(ctr == 6)
-                        tempKey = ds2.getValue().toString();
-                    ctr++;
-                }
-                if(temp.equals("")||!temp.equals(tempKey)){
-                    int num = 1;
-                    String date=null, description=null, endTime=null, groupKey=null, key=null, name=null, startTime=null,status=null,venue=null;
-                    ArrayList<String> eventMembers = new ArrayList<>();
-                    for(DataSnapshot ds: dataSnapshot.getChildren()){
-                        switch (num) {
-                            case (1):
-                                date = ds.getValue().toString();
-                                break;
-                            case (2):
-                                description = ds.getValue().toString();
-                                break;
-                            case (3):
-                                endTime = ds.getValue().toString();
-                                break;
-                            case (4):
-                                for (DataSnapshot ds3 : ds.getChildren()) {
-                                    eventMembers.add(ds3.getKey() + ":" + ds3.getValue());
-                                }
-                                break;
-                            case (5):
-                                groupKey = ds.getValue().toString();
-                                break;
-                            case (6):
-                                key = ds.getValue().toString();
-                                temp = key;
-                                break;
-                            case (7):
-                                name = ds.getValue().toString();
-                                break;
-                            case (8):
-                                startTime = ds.getValue().toString();
-                                break;
-                            case (9):
-                                status = ds.getValue().toString();
-                                break;
-                            case (10):
-                                venue = ds.getValue().toString();
-                                Event event = new Event(name, date, startTime, endTime, venue, description, status, key, groupKey);
-                                event.setEventMembers(eventMembers);
-                                eventArrayList.add(event);
-                                adapter.notifyItemInserted(eventArrayList.size() - 1);
-                                break;
-                        }
-                        if (num <= 10)
-                            num++;
-                        else
-                            num = 1;
+
+                    int ctr = 1;
+                    String tempKey = "";
+                    for(DataSnapshot ds2: dataSnapshot.getChildren()){
+                        if(ctr == 6)
+                            tempKey = ds2.getValue().toString();
+                        ctr++;
                     }
-                }
+                    if(temp.equals("")||!temp.equals(tempKey)){
+                        int num = 1;
+                        String date=null, description=null, endTime=null, groupKey=null, key=null, name=null, startTime=null,status=null,venue=null;
+                        ArrayList<String> eventMembers = new ArrayList<>();
+                        for(DataSnapshot ds: dataSnapshot.getChildren()){
+                            switch (num) {
+                                case (1):
+                                    date = ds.getValue().toString();
+                                    break;
+                                case (2):
+                                    description = ds.getValue().toString();
+                                    break;
+                                case (3):
+                                    endTime = ds.getValue().toString();
+                                    break;
+                                case (4):
+                                    for (DataSnapshot ds3 : ds.getChildren()) {
+                                        eventMembers.add(ds3.getKey() + ":" + ds3.getValue());
+                                    }
+                                    break;
+                                case (5):
+                                    groupKey = ds.getValue().toString();
+                                    break;
+                                case (6):
+                                    key = ds.getValue().toString();
+                                    temp = key;
+                                    break;
+                                case (7):
+                                    name = ds.getValue().toString();
+                                    break;
+                                case (8):
+                                    startTime = ds.getValue().toString();
+                                    break;
+                                case (9):
+                                    status = ds.getValue().toString();
+                                    break;
+                                case (10):
+                                    venue = ds.getValue().toString();
+                                    Event event = new Event(name, date, startTime, endTime, venue, description, status, key, groupKey);
+                                    event.setEventMembers(eventMembers);
+                                    eventArrayList.add(event);
+                                    adapter.notifyItemInserted(eventArrayList.size() - 1);
+                                    break;
+                            }
+                            if (num <= 10)
+                                num++;
+                            else
+                                num = 1;
+                        }
+                    }
+
             }
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {

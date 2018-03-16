@@ -53,8 +53,16 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListHolder> {
         holder.check.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.check.setColorFilter(context.getResources().getColor(R.color.colorPrimary));
-                taskDA.setStatus(task.getKey(),"Task done");
+                if(holder.status.getText().toString().equals("Undone")){
+                    holder.check.setColorFilter(context.getApplicationContext().getResources().getColor(R.color.colorPrimary));
+                    holder.status.setText("Task done");
+                    taskDA.setStatus(task.getKey(),"Task done");
+                } else {
+                    holder.check.setColorFilter(context.getApplicationContext().getResources().getColor(R.color.material_grey_500));
+                    holder.status.setText("Undone");
+                    taskDA.setStatus(task.getKey(),"Undone");
+                }
+
             }
         });
     }

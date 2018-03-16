@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -60,6 +61,7 @@ public class HomeFragment extends Fragment {
         groupDA = new GroupDA();
         userDA = new UserDA();
         ButterKnife.bind(getActivity());
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
 
         FragmentManager fm = getActivity().getSupportFragmentManager();
         String tag = fm.getBackStackEntryAt(fm.getBackStackEntryCount() - 1).getName();
@@ -165,6 +167,7 @@ public class HomeFragment extends Fragment {
             }
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
+
             }
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -182,13 +185,11 @@ public class HomeFragment extends Fragment {
                     Group group = new Group(groupName, key, groupCode);
                     group.setGroupMembers(groupMembers);
                     groupArrayList.add(group);
-                    adapter.notifyItemInserted(groupArrayList.size() - 1);
-                    /*if (adapter.getItemCount() >= groupArrayList.size()&&adapter.getIsDeleted()==false)
+
+                    if (adapter.getItemCount() >= groupArrayList.size()&&adapter.getIsDeleted()==false)
                         adapter.notifyItemInserted(groupArrayList.size() - 1);
                     else if(adapter.getIsDeleted()==true)
-                        adapter.setIsDeleted();*/
-
-
+                        adapter.setIsDeleted();
 
                 }
                 if (num < 5)

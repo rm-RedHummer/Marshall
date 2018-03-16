@@ -319,11 +319,12 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        isDeleted = true;
                         groupDA.deleteGroup(key);
                         userDA.deleteGroup(mAuth.getCurrentUser().getUid(),key);
                         groupList.remove(Integer.parseInt(position));
                         notifyItemRemoved(Integer.parseInt(position));
-                        isDeleted = true;
+
                         //notifyItemRangeChanged(Integer.parseInt(position), groupList.size());
 
 
