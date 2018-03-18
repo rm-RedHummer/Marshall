@@ -9,6 +9,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
@@ -38,6 +39,7 @@ import com.jarvis.marshall.dataAccess.UserDA;
 import com.jarvis.marshall.model.Group;
 import com.jarvis.marshall.view.home.eventsList.EventsListFragment;
 import com.jarvis.marshall.view.home.groups.HomeFragment;
+import com.jarvis.marshall.view.home.members.MembersFragment;
 
 import java.util.ArrayList;
 
@@ -48,15 +50,14 @@ import java.util.ArrayList;
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
     private Context context;
     private ArrayList<Group> groupList;
-    private String userPosition,groupKey,groupPosition;
+    private String groupKey,groupPosition;
     private LayoutInflater inflater;
     private GroupDA groupDA;
     private UserDA userDA;
     private ProgressDialog progressDialog;
     private AlertDialog optionsDialog;
     private FirebaseAuth mAuth;
-    private final ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
-
+    private boolean isDeleted;
 
     public HomeAdapter(Context context, ArrayList<Group> groupList, ProgressDialog progressDialog){
         this.context = context;
@@ -65,9 +66,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
         groupDA = new GroupDA();
         userDA = new UserDA();
         this.progressDialog = progressDialog;
-        viewBinderHelper.setOpenOnlyOne(true);
-        mAuth = FirebaseAuth.getInstance();
 
+        mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -79,59 +79,57 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
     @Override
     public void onBindViewHolder(final ListHolder holder, final int position) {
         final Group group = groupList.get(position);
-        viewBinderHelper.bind(holder.swipeRevealLayout,group.getKey());
+
+        final ArrayList<String> groupMembers = group.getGroupMembers();
+        final ArrayList<String> userPos = new ArrayList<>();
+
+        for(int i = 0; i < groupMembers.size(); i++){
+            String[] split = groupMembers.get(i).split(":");
+            if(split[0].equals(mAuth.getCurrentUser().getUid()))
+                userPos.add(split[1]);
+        }
+
+
 
         holder.constraintLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                viewEventsList(group.getKey());
+                changeFragment(new EventsListFragment(),group.getKey(),userPos.get(0));
+                //viewEventsList(group.getKey());
             }
         });
 
         holder.constraintLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                showDialog(group.getGroupName());
+                showDialog(group.getGroupName(),userPos);
                 groupKey = group.getKey();
                 groupPosition = String.valueOf(position);
                 return true;
             }
         });
 
-        holder.editButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder dg = new AlertDialog.Builder(context);
-                dg.setMessage("Edit is clicked");
-                dg.show();
-            }
-        });
 
-        holder.deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder dg = new AlertDialog.Builder(context);
-                dg.setMessage("Delete is clicked");
-                dg.show();
-            }
-        });
         groupDA.getGroup(group.getKey()).addChildEventListener(new ChildEventListener() {
             int ctr = 1;
-            ArrayList<String> groupMembers;
-            String groupName;
+
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                if (ctr == 2) {
+                if(ctr == 1)
+                    holder.groupCode.setText(dataSnapshot.getValue().toString());
+                else if (ctr == 2) {
                     int numOfMembers = (int) dataSnapshot.getChildrenCount();
                     holder.numOfMembers.setText(String.valueOf(numOfMembers) + " Joined");
                     for(DataSnapshot dataSnapshot1:dataSnapshot.getChildren()){
                         if(dataSnapshot1.getKey().equals(mAuth.getCurrentUser().getUid())){
+
                             if(dataSnapshot1.getValue().equals("Member")){
                                 holder.check.setVisibility(View.INVISIBLE);
-                                holder.userPosition.setVisibility(View.INVISIBLE);
-                                holder.userPosition.setText("Member");
+                                holder.userPositionTextView.setVisibility(View.INVISIBLE);
+                                holder.userPositionTextView.setText("Member");
                             } else {
-                                holder.userPosition.setText("Admin");
+                                holder.userPositionTextView.setText("Admin");
+
                             }
                         }
                     }
@@ -144,25 +142,17 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
                     ctr = 1;
 
             }
-
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
             }
-
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-
             }
-
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
         /*groupDA.getGroup(group.getKey()).addValueEventListener(new ValueEventListener() {
@@ -201,7 +191,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
 
             }
         });*/
-        userPosition = holder.userPosition.getText().toString();
+
         final int  width = Resources.getSystem().getDisplayMetrics().widthPixels;
         holder.constraintLayout.post(new Runnable() {
             @Override
@@ -213,33 +203,34 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
                 //holder.constraintLayout.setMinWidth(width);
             }
         });
+
+
         progressDialog.dismiss();
     }
 
     @Override
     public int getItemCount() { return groupList.size(); }
 
+    public boolean getIsDeleted(){ return isDeleted; };
+
+    public void setIsDeleted(){ this.isDeleted = false; }
+
     public class ListHolder extends RecyclerView.ViewHolder {
-        private TextView groupName, numOfMembers,userPosition;
-        private SwipeRevealLayout swipeRevealLayout;
-        private Button deleteButton,editButton;
+        private TextView groupName, numOfMembers,userPositionTextView,groupCode;
         private ConstraintLayout constraintLayout;
         private ImageView check;
         public ListHolder(View itemView) {
             super(itemView);
             groupName = itemView.findViewById(R.id.vh_groups_title);
             numOfMembers = itemView.findViewById(R.id.vh_groups_members);
-            swipeRevealLayout = itemView.findViewById(R.id.vh_group_swipe_reveal_layout);
-            deleteButton = itemView.findViewById(R.id.vh_group_leave_btn);
-            editButton = itemView.findViewById(R.id.vh_group_edit_btn);
             constraintLayout = itemView.findViewById(R.id.vh_group_constraint);
             check = itemView.findViewById(R.id.vh_group_checkImage);
-            userPosition = itemView.findViewById(R.id.vh_group_userStatus);
+            userPositionTextView = itemView.findViewById(R.id.vh_group_userStatus);
+            groupCode  = itemView.findViewById(R.id.vh_group_groupCode);
         }
     }
 
-    public void showDialog(String name){
-
+    public void showDialog(String name,ArrayList<String> userPos){
         MainActivity mainActivity = (MainActivity) context;
         LayoutInflater inflater = mainActivity.getLayoutInflater();
         final View view2 = inflater.inflate(R.layout.dialog_group_options, null);
@@ -247,17 +238,30 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
                 .setView(view2)
                 .create();
         Button viewMembers, delete, editName, viewReports;
+        ImageView lineMembers, lineReports, lineEditName;
         TextView groupName;
         viewMembers = view2.findViewById(R.id.dgGroupSettings_members);
         delete = view2.findViewById(R.id.dgGroupSettings_delete);
         editName  = view2.findViewById(R.id.dgGroupSettings_editName);
         viewReports = view2.findViewById(R.id.dgGroupSettings_report);
         groupName = view2.findViewById(R.id.dgGroupSettings_groupName);
+        lineEditName = view2.findViewById(R.id.dgGroupSettings_lineEditName);
+        lineReports = view2.findViewById(R.id.dgGroupSettings_lineReports);
+        lineMembers = view2.findViewById(R.id.dgGroupSettings_lineMembers);
+
+        if(!userPos.get(0).equals("Admin") ){ // F T
+            delete.setVisibility(View.GONE);
+            editName.setVisibility(View.GONE);
+            viewReports.setVisibility(View.GONE);
+            lineEditName.setVisibility(View.GONE);
+            lineMembers.setVisibility(View.GONE);
+            lineReports.setVisibility(View.GONE);
+        }
 
         viewMembers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                changeFragment(new MembersFragment(), groupKey, "0");
             }
         });
         delete.setOnClickListener(new View.OnClickListener() {
@@ -292,22 +296,36 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
         optionsDialog.show();
     }
 
+    private void changeFragment(Fragment fragment, String key,String userPosition){
+        MainActivity mainActivity = (MainActivity) context;
+        Bundle bundle = new Bundle();
+        bundle.putString("groupKey",key);
+        bundle.putString("userPosition",userPosition);
+        fragment.setArguments(bundle);
+
+        FragmentTransaction ft = mainActivity.getSupportFragmentManager().beginTransaction();
+        ft.setCustomAnimations(R.anim.enter_anim,R.anim.stay_anim,R.anim.stay_anim,R.anim.exit_anim);
+        ft.replace(R.id.main_framelayout, fragment, key);
+        ft.addToBackStack(key);
+        ft.commit();
+    }
+
     private void deleteGroup(){
         final String key = groupKey, position = groupPosition;
         optionsDialog.dismiss();
-        AlertDialog.Builder dg = new AlertDialog.Builder(context);
-        dg.setMessage(key);
-        dg.show();
+
         final AlertDialog dialog = new AlertDialog.Builder(context)
                 .setMessage("Are you sure you want to delete this group?")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        isDeleted = true;
                         groupDA.deleteGroup(key);
                         userDA.deleteGroup(mAuth.getCurrentUser().getUid(),key);
                         groupList.remove(Integer.parseInt(position));
                         notifyItemRemoved(Integer.parseInt(position));
-                        notifyItemRangeChanged(Integer.parseInt(position), groupList.size());
+
+                        //notifyItemRangeChanged(Integer.parseInt(position), groupList.size());
 
 
                     }
@@ -317,21 +335,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
         dialog.show();
     }
 
-    public void viewEventsList(String groupKey){
-        MainActivity mainActivity = (MainActivity) context;
-        EventsListFragment eventsListFragment = new EventsListFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString("groupKey",groupKey);
-        bundle.putString("userPosition",userPosition);
-        eventsListFragment.setArguments(bundle);
 
-        FragmentTransaction ft = mainActivity.getSupportFragmentManager().beginTransaction();
-        //ft.add(R.id.main_framelayout, eventsListFragment, "EventsListFragment");
-        ft.setCustomAnimations(R.anim.enter_anim,R.anim.stay_anim,R.anim.stay_anim,R.anim.exit_anim);
-        ft.replace(R.id.main_framelayout, eventsListFragment,groupKey);
-        ft.addToBackStack(groupKey);
-        ft.commit();
-    }
     public void clearBackStack(){
         MainActivity mainActivity = (MainActivity) context;
         final FragmentManager fm = mainActivity.getSupportFragmentManager();

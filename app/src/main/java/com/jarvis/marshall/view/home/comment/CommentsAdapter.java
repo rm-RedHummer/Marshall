@@ -45,7 +45,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ListHo
         holder.comment.setText(comment.getComment());
         holder.name.setText(comment.getName());
         holder.date.setText(processDate(comment.getDate()));
-        holder.time.setText(" "+comment.getTime());
+        holder.time.setText(" "+processTime(comment.getTime()));
     }
 
     @Override
@@ -64,9 +64,23 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ListHo
         }
     }
     private String processTime(String time){
-        String newTime="";
+        String newTime="",postTime;
         String[] timeArray = time.split(":");
+        int hour = Integer.parseInt(timeArray[0]);
+        int minute  = Integer.parseInt(timeArray[1]);
+        if(hour >11)
+            postTime = "pm";
+        else
+            postTime = "am";
 
+        if(hour>12){
+            hour = hour - 12;
+        } else if(hour == 0)
+            hour = 12;
+
+        if(minute<10)
+            timeArray[1] = "0"+timeArray[1];
+        newTime = String.valueOf(hour)+":"+timeArray[1]+postTime;
         return newTime;
     }
 

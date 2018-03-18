@@ -125,10 +125,9 @@
             app:layout_constraintTop_toBottomOf="@+id/textInputLayout2" />
 
         <ImageButton
-            android:id="@+id/login_visibilityBtn"
+            android:id="@+id/signup_visibilityBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="16dp"
             android:layout_marginTop="8dp"
             android:layout_weight="1"
             android:background="@android:color/transparent"

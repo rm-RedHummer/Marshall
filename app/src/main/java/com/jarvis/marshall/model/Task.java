@@ -1,6 +1,7 @@
 package com.jarvis.marshall.model;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * Created by Jarvis on 13/02/2018.
@@ -8,7 +9,9 @@ import java.util.ArrayList;
 
 public class Task {
     private String key, eventKey, name, details, deadlineDate, status, deadlineTime, remarks;
-    private ArrayList<String> members;
+    private Map taskMembers;
+
+
 
     public Task(String key, String eventKey, String name, String details, String deadlineDate, String status, String deadlineTime, String remarks) {
         this.key = key;
@@ -53,9 +56,11 @@ public class Task {
         return status;
     }
 
-    public ArrayList<String> getMembers() {
-        return members;
+    public Map getTaskMembers() {
+        return taskMembers;
     }
+
+
 
     public void setKey(String key) {
         this.key = key;
@@ -89,7 +94,13 @@ public class Task {
         this.remarks = remarks;
     }
 
-    public void setMembers(ArrayList<String> members) {
-        this.members = members;
+    public void setTaskMembers(Map taskMembers) {
+        this.taskMembers = taskMembers;
     }
+
+
+
+
+
+
 }

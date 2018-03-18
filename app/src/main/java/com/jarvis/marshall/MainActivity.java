@@ -28,6 +28,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.jarvis.marshall.dataAccess.GroupDA;
 import com.jarvis.marshall.dataAccess.UserDA;
 import com.jarvis.marshall.model.Group;
+import com.jarvis.marshall.model.User;
 import com.jarvis.marshall.view.home.HomeAdapter;
 import com.jarvis.marshall.view.home.groups.HomeFragment;
 import com.jarvis.marshall.view.home.settings.SettingsFragment;
@@ -125,9 +126,6 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }

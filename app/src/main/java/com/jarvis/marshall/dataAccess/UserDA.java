@@ -28,4 +28,7 @@ public class UserDA extends DA {
     public Query getUserName(String userKey){
         return rootRef.child(node).child(userKey).child("name");
     }
+    public Query getUser(String userKey){
+        return rootRef.child(node).child(userKey);
+    }
 }

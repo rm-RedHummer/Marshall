@@ -7,21 +7,21 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/dgGroupSettings_groupName"
+        android:id="@+id/dgEventSettings_eventName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:background="@color/material_grey_300"
         android:paddingBottom="8dp"
         android:paddingTop="8dp"
-        android:text="Group Name"
+        android:text="Event Name"
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textColor="@android:color/black"
         android:textSize="18sp" />
 
     <Button
-        android:id="@+id/dgGroupSettings_members"
+        android:id="@+id/dgEventSettings_members"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
         android:textSize="14sp" />
 
     <ImageView
-        android:id="@+id/dgGroupSettings_lineMembers"
+        android:id="@+id/dgEventSettings_lineMembers"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_weight="1"
@@ -42,7 +42,7 @@
         app:srcCompat="@color/material_grey_300" />
 
     <Button
-        android:id="@+id/dgGroupSettings_report"
+        android:id="@+id/dgEventSettings_report"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
         android:textSize="14sp" />
 
     <ImageView
-        android:id="@+id/dgGroupSettings_lineReports"
+        android:id="@+id/dgEventSettings_lineReports"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_weight="1"
@@ -63,18 +63,18 @@
         app:srcCompat="@color/material_grey_300" />
 
     <Button
-        android:id="@+id/dgGroupSettings_editName"
+        android:id="@+id/dgEventSettings_editEvent"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:background="@color/cardview_light_background"
-        android:text="Edit Group Name"
+        android:text="Edit Event"
         android:textAppearance="@style/TextLabel"
         android:textSize="14sp" />
 
     <ImageView
-        android:id="@+id/dgGroupSettings_lineEditName"
+        android:id="@+id/dgEventSettings_lineEditName"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_weight="1"
@@ -84,7 +84,7 @@
         app:srcCompat="@color/material_grey_300" />
 
     <Button
-        android:id="@+id/dgGroupSettings_delete"
+        android:id="@+id/dgEventSettings_delete"
         style="@android:style/Widget.DeviceDefault.Button.Borderless"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

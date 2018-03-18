@@ -142,6 +142,30 @@
                         app:layout_constraintBottom_toBottomOf="@+id/vh_group_checkImage"
                         app:layout_constraintStart_toEndOf="@+id/vh_group_checkImage"
                         app:layout_constraintTop_toTopOf="@+id/vh_group_checkImage" />
+
+                    <TextView
+                        android:id="@+id/groupCodeTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginTop="16dp"
+                        android:text="Group Code"
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/vh_group_groupCode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ocKoMC"
+                        android:textColor="@color/material_grey_900"
+                        android:textSize="12sp"
+                        app:layout_constraintEnd_toEndOf="@+id/groupCodeTitle"
+                        app:layout_constraintStart_toStartOf="@+id/groupCodeTitle"
+                        app:layout_constraintTop_toBottomOf="@+id/groupCodeTitle" />
+
                 </android.support.constraint.ConstraintLayout>
             </android.support.v7.widget.CardView>
         </android.support.constraint.ConstraintLayout>
@@ -151,3 +175,5 @@
     </com.chauthai.swipereveallayout.SwipeRevealLayout>
 
 </android.support.constraint.ConstraintLayout>
+
+

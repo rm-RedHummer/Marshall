@@ -30,5 +30,9 @@ public class EventDA extends  DA{
         return rootRef.child(node).child(eventKey).child("eventMembers");
     }
 
+    public void deleteEvent(String eventKey){
+        rootRef.child(node).child(eventKey).removeValue();
+    }
+
 
 }
