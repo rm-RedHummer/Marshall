@@ -7,3 +7,9 @@ app\app.iml
 /captures
 .externalNativeBuild
 *.gradle
+.idea/dictionaries/Keith.xml
+*.xml
+*.xml
+*.iml
+app/app.iml
+*.iml
