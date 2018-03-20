@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity
         TextView email = header.findViewById(R.id.nav_header_email);
         email.setText(mAuth.getCurrentUser().getEmail());
 
+
         changeFragment(new HomeFragment(), "GroupListFragment");
         /*FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.main_framelayout, new HomeFragment());

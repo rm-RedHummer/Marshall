@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -36,6 +38,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener
 {
     private View view;
     private Button fullnameBtn, passwordBtn, emailBtn;
+    private TextView name;
     private String fullname,password, newPass, email;
     private FirebaseAuth mAuth;
     ProgressDialog pd;
@@ -55,6 +58,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener
         String tag = fm.getBackStackEntryAt(fm.getBackStackEntryCount() - 1).getName();
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
         toolbar.setTitle("Settings");
+
+        name = view.findViewById(R.id.fragmentSettings_userName);
+        name.setText(mAuth.getCurrentUser().getDisplayName());
 
         fullnameBtn = view.findViewById(R.id.settings_changeNameBtn);
         passwordBtn = view.findViewById(R.id.settings_changePasswordBtn);
@@ -105,6 +111,11 @@ public class SettingsFragment extends Fragment implements View.OnClickListener
                         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                 .setDisplayName(fullname).build();
                         firebaseUser.updateProfile(profileUpdates);
+                        name.setText(fullname);
+                        NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
+                        View header = navigationView.getHeaderView(0);
+                        TextView nameTV = header.findViewById(R.id.nav_header_name);
+                        name.setText(fullname);
                         dialog.dismiss();
                     }
                 });
@@ -131,36 +142,36 @@ public class SettingsFragment extends Fragment implements View.OnClickListener
                 b.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View view) {
                         EditText passwordEditText = view2.findViewById(R.id.dgPassword_settings);
+                        EditText oldPass = view2.findViewById(R.id.dgPassword_oldPassword);
                         password = passwordEditText.getText().toString();
-                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                        final FirebaseUser firebaseUser = mAuth.getCurrentUser();
                         if(firebaseUser != null) {
-                            pd.setMessage("Changing Password. Please wait");
-                            pd.show();
-                            firebaseUser.updatePassword(passwordEditText.getText().toString())
+                            AuthCredential credential = EmailAuthProvider
+                                    .getCredential(mAuth.getCurrentUser().getEmail(), oldPass.getText().toString());
+                            mAuth.getCurrentUser().updatePassword(password);
+
+                            /*firebaseUser.reauthenticate(credential)
                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
-                                                pd.dismiss();
-                                                Toast.makeText(getActivity(), "Your password has been changed", Toast.LENGTH_LONG);
-                                                mAuth.signOut();
-                                                getActivity().finish();
-                                                Intent i = new Intent(getActivity(), MainActivity.class);
-                                                startActivity(i);
-                                                dialog.dismiss();
+                                                firebaseUser.updatePassword(newPass).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (task.isSuccessful()) {
+                                                            Toast.makeText(getActivity(), "Password successfully changed", Toast.LENGTH_LONG);
+
+                                                        } else {
+                                                            Toast.makeText(getActivity(), "Failed to change password", Toast.LENGTH_LONG);
+                                                        }
+                                                    }
+                                                });
                                             } else {
-                                                pd.dismiss();
-                                                Toast.makeText(getActivity(), "Your password cannot be changed", Toast.LENGTH_LONG);
-                                                dialog.dismiss();
+                                                Toast.makeText(getActivity(), "Failed to change password", Toast.LENGTH_LONG);
                                             }
                                         }
-                                    });
 
-                        }
-                        else{
-                            pd.dismiss();
-                            dialog.dismiss();
-                            Toast.makeText(getActivity(), "Authentication Failed", Toast.LENGTH_LONG);
+                                    });*/
                         }
                     }
                 });
@@ -195,6 +206,11 @@ public class SettingsFragment extends Fragment implements View.OnClickListener
                         if(firebaseUser != null) {
                             firebaseUser.updateEmail(email);
                             dialog.dismiss();
+
+                            NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
+                            View header = navigationView.getHeaderView(0);
+                            TextView emailTV = header.findViewById(R.id.nav_header_email);
+                            emailTV.setText(email);
                         }
                     }
                 });
