@@ -27,4 +27,12 @@ public class TaskDA extends DA {
     public void setStatus(String taskKey, String status){
         rootRef.child(node).child(taskKey).child("status").setValue(status);
     }
+
+    public void deleteTask(String taskKey){
+        rootRef.child(node).child(taskKey).removeValue();
+    }
+
+    public Query getSpecificTask(String taskKey){
+        return rootRef.child(node).child(taskKey);
+    }
 }

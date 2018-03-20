@@ -1,10 +1,18 @@
 package com.jarvis.marshall.view.home.members;
 
 import android.content.Context;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+import com.jarvis.marshall.R;
+import com.jarvis.marshall.dataAccess.UserDA;
 
 import java.util.ArrayList;
 
@@ -15,32 +23,50 @@ import java.util.ArrayList;
 public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.ListHolder> {
     private Context context;
     private LayoutInflater inflater;
-    private ArrayList<String> membersName, membersPosition;
-    public MembersAdapter(Context context, ArrayList<String> membersName, ArrayList<String> membersPosition){
+    private ArrayList<String> membersKey, membersPosition;
+    private UserDA userDA;
+
+    public MembersAdapter(Context context, ArrayList<String> membersKey, ArrayList<String> membersPosition){
         this.context = context;
         inflater = LayoutInflater.from(context);
-        this.membersName = membersName;
+        this.membersKey = membersKey;
         this.membersPosition = membersPosition;
+        userDA = new UserDA();
     }
 
     @Override
     public ListHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return null;
+        View itemView = inflater.inflate(R.layout.viewholder_members,parent,false);
+        return new ListHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(ListHolder holder, int position) {
+    public void onBindViewHolder(final ListHolder holder, int position) {
+        userDA.getUserName(membersKey.get(position)).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                holder.name.setText(dataSnapshot.getValue().toString());
+            }
 
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        holder.position.setText(membersPosition.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return membersPosition.size();
     }
 
     public class ListHolder extends RecyclerView.ViewHolder {
+        private TextView name, position;
         public ListHolder(View itemView) {
             super(itemView);
+            name = itemView.findViewById(R.id.vhMembers_name);
+            position = itemView.findViewById(R.id.vhMembers_position);
         }
     }
 }

@@ -31,6 +31,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.jarvis.marshall.MainActivity;
 import com.jarvis.marshall.R;
@@ -110,7 +112,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
         });
 
 
-        groupDA.getGroup(group.getKey()).addChildEventListener(new ChildEventListener() {
+        /*groupDA.getGroup(group.getKey()).addChildEventListener(new ChildEventListener() {
             int ctr = 1;
 
             @Override
@@ -154,31 +156,35 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
-        });
-        /*groupDA.getGroup(group.getKey()).addValueEventListener(new ValueEventListener() {
+        });*/
+        groupDA.getGroup(group.getKey()).addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(DataSnapshot ds) {
                 int ctr = 1;
                 ArrayList<String> groupMembers;
                 String groupName;
-                for(DataSnapshot ds: dataSnapshot.getChildren()){
-                    if (ctr == 2) {
-                        int numOfMembers = (int) ds.getChildrenCount();
+                for(DataSnapshot dataSnapshot: ds.getChildren()){
+                    if(ctr == 1)
+                        holder.groupCode.setText(dataSnapshot.getValue().toString());
+                    else if (ctr == 2) {
+                        int numOfMembers = (int) dataSnapshot.getChildrenCount();
                         holder.numOfMembers.setText(String.valueOf(numOfMembers) + " Joined");
-                        for(DataSnapshot dataSnapshot1:ds.getChildren()){
+                        for(DataSnapshot dataSnapshot1:dataSnapshot.getChildren()){
                             if(dataSnapshot1.getKey().equals(mAuth.getCurrentUser().getUid())){
+
                                 if(dataSnapshot1.getValue().equals("Member")){
                                     holder.check.setVisibility(View.INVISIBLE);
-                                    holder.userPosition.setVisibility(View.INVISIBLE);
-                                    holder.userPosition.setText("Member");
+                                    holder.userPositionTextView.setVisibility(View.INVISIBLE);
+                                    holder.userPositionTextView.setText("Member");
                                 } else {
-                                    holder.userPosition.setText("Admin");
+                                    holder.userPositionTextView.setText("Admin");
+
                                 }
                             }
                         }
                     }
                     else if (ctr == 3)
-                        holder.groupName.setText(ds.getValue().toString());
+                        holder.groupName.setText(dataSnapshot.getValue().toString());
                     if (ctr < 5)
                         ctr++;
                     else
@@ -190,7 +196,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });*/
+        });
 
         final int  width = Resources.getSystem().getDisplayMetrics().widthPixels;
         holder.constraintLayout.post(new Runnable() {
@@ -231,7 +237,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
     }
 
     public void showDialog(String name,ArrayList<String> userPos){
-        MainActivity mainActivity = (MainActivity) context;
+        final MainActivity mainActivity = (MainActivity) context;
         LayoutInflater inflater = mainActivity.getLayoutInflater();
         final View view2 = inflater.inflate(R.layout.dialog_group_options, null);
         optionsDialog = new AlertDialog.Builder(context)
@@ -249,19 +255,21 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
         lineReports = view2.findViewById(R.id.dgGroupSettings_lineReports);
         lineMembers = view2.findViewById(R.id.dgGroupSettings_lineMembers);
 
+        viewReports.setVisibility(View.GONE);
+        lineReports.setVisibility(View.GONE);
         if(!userPos.get(0).equals("Admin") ){ // F T
             delete.setVisibility(View.GONE);
             editName.setVisibility(View.GONE);
-            viewReports.setVisibility(View.GONE);
+
             lineEditName.setVisibility(View.GONE);
             lineMembers.setVisibility(View.GONE);
-            lineReports.setVisibility(View.GONE);
         }
 
         viewMembers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 changeFragment(new MembersFragment(), groupKey, "0");
+                optionsDialog.dismiss();
             }
         });
         delete.setOnClickListener(new View.OnClickListener() {
@@ -273,7 +281,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
         editName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                editGroupName(mainActivity);
             }
         });
         viewReports.setOnClickListener(new View.OnClickListener() {
@@ -341,6 +349,56 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ListHolder>{
         final FragmentManager fm = mainActivity.getSupportFragmentManager();
     }
 
+    public void editGroupName(final Activity activity){
+        LayoutInflater inflater = activity.getLayoutInflater();
+        final View view2 = inflater.inflate(R.layout.dialog_add_group,null);
+        final AlertDialog dialog = new AlertDialog.Builder(context)
+                .setView(view2)
+                .setTitle("Enter new name of the group.")
+                .setPositiveButton("Confirm", null) //Set to null. We override the onclick
+                .setNegativeButton("Cancel", null)
+                .create();
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+
+            @Override
+            public void onShow(final DialogInterface dialog) {
+
+                Button b = ((AlertDialog)dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                b.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(final View view) {
+                        final EditText groupName = view2.findViewById(R.id.editText_group_name);
+                        if(groupName.getText().toString().isEmpty()){
+                            Snackbar.make(view, "Please enter group name.", Snackbar.LENGTH_LONG)
+                                    .setAction("Action", null).show();
+                        } else {
+                            groupDA.checkGroupNames(groupName.getText().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.getValue() != null) {
+                                        Snackbar.make(view, "Group name is already taken.", Snackbar.LENGTH_LONG)
+                                                .setAction("Action", null).show();
+                                    } else {
+                                        groupDA.changeGroupName(groupKey,groupName.getText().toString());
+                                        Snackbar.make(view, "The name of the group is successfully changed.", Snackbar.LENGTH_LONG)
+                                                .setAction("Action", null).show();
+
+                                        optionsDialog.dismiss();
+                                        dialog.dismiss();
+                                    }
+                                }
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        });
+        dialog.show();
+    }
 
 
 

@@ -1,6 +1,7 @@
 package com.jarvis.marshall.model;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * Created by Jarvis on 03/02/2018.
@@ -8,7 +9,7 @@ import java.util.ArrayList;
 
 public class Event {
     private String name, date, startTime, endTime,venue, description, status, key, groupKey;
-    private ArrayList<String> eventMembers;
+    private Map eventMembers;
 
     public Event(String name, String date, String startTime, String endTime, String venue,
                  String description, String status, String key, String groupKey){
@@ -59,7 +60,7 @@ public class Event {
         this.groupKey = groupKey;
     }
 
-    public void setEventMembers(ArrayList<String> eventMembers) {
+    public void setEventMembers(Map eventMembers) {
         this.eventMembers = eventMembers;
     }
 
@@ -99,7 +100,7 @@ public class Event {
         return groupKey;
     }
 
-    public ArrayList<String> getEventMembers() {
+    public Map getEventMembers() {
         return eventMembers;
     }
 

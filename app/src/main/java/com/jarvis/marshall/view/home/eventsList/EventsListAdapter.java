@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
@@ -27,8 +28,10 @@ import com.jarvis.marshall.R;
 import com.jarvis.marshall.dataAccess.EventDA;
 import com.jarvis.marshall.model.Event;
 import com.jarvis.marshall.view.home.event.EventMainFragment;
+import com.jarvis.marshall.view.home.members.MembersFragment;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * Created by Jarvis on 02/02/2018.
@@ -68,7 +71,20 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Li
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                viewEvent(event.getKey());
+                String userPos = "";
+                boolean isUserMember=false;
+                if(!userPosition.equals("Admin")){
+                    for(Object key: event.getEventMembers().keySet()){
+                        if(key.toString().equals(mAuth.getCurrentUser().getUid().toString())) {
+                            userPos = event.getEventMembers().get(key.toString()).toString();
+                            isUserMember = true;
+                        }
+                    }
+                    if(isUserMember==false)
+                        userPos = "None";
+                } else
+                    userPos = "Admin";
+                viewEvent(event.getKey(),userPos);
             }
         });
 
@@ -76,72 +92,23 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Li
             @Override
             public boolean onLongClick(View view) {
                 String userPos = "";
+                boolean isUserMember=false;
                 if(!userPosition.equals("Admin")){
-                    for(int ctr = 0; ctr<event.getEventMembers().size(); ctr++){
-                        String[] split = event.getEventMembers().get(ctr).split(":");
-                        if(split[0].equals(mAuth.getCurrentUser().getUid().toString()))
-                            userPos = split[1];
+                    for(Object key: event.getEventMembers().keySet()){
+                        if(key.toString().equals(mAuth.getCurrentUser().getUid().toString())) {
+                            userPos = event.getEventMembers().get(key.toString()).toString();
+                            isUserMember = true;
+                        }
                     }
-                }
+                    if(isUserMember==false)
+                        userPos = "None";
+                } else
+                    userPos = "Admin";
 
-                showDialog(event.getName(),userPos,event.getKey(),position);
+                showDialog(event.getName(),event.getKey(),position,userPos);
                 return false;
             }
         });
-
-        /*eventDA.getSpecificEvent(event.getKey()).addChildEventListener(new ChildEventListener() {
-            int num = 1;
-            String date=null, description=null, endTime=null, groupKey=null, key=null, name=null, startTime=null,status=null,venue=null;
-            ArrayList<String> eventMembers = new ArrayList<>();
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                if(dataSnapshot.getValue()!=null){
-                    switch (num) {
-                        case (1):
-                            holder.date.setText(dataSnapshot.getValue().toString());
-                            break;
-                        case (3):
-                            holder.endTime.setText(dataSnapshot.getValue().toString());
-                            break;
-                        case (4):
-                            for(DataSnapshot ds2: dataSnapshot.getChildren()){
-                                if(ds2.getKey().equals(mAuth.getCurrentUser().getUid())) {
-                                    holder.check.setVisibility(View.VISIBLE);
-                                    holder.userPosition.setVisibility(View.VISIBLE);
-                                    holder.userPosition.setText(ds2.getValue().toString());
-                                }
-                            }
-                            break;
-                        case (7):
-                            holder.eventName.setText(dataSnapshot.getValue().toString());
-                            break;
-                        case (8):
-                            holder.startTime.setText(dataSnapshot.getValue().toString());
-                            break;
-                    }
-                    if(num <= 10)
-                        num++;
-                    else
-                        num = 1;
-                }
-            }
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });*/
 
         eventDA.getSpecificEvent(event.getKey()).addValueEventListener(new ValueEventListener() {
             @Override
@@ -194,13 +161,14 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Li
         progressDialog.dismiss();
     }
 
-    public void viewEvent(String eventKey){
+    public void viewEvent(String eventKey,String userPos){
         MainActivity mainActivity = (MainActivity) context;
         EventMainFragment eventMainFragment = new EventMainFragment();
         FragmentTransaction ft = mainActivity.getSupportFragmentManager().beginTransaction();
 
         Bundle bundle = new Bundle();
         bundle.putString("eventKey",eventKey);
+        bundle.putString("userPosition",userPos);
         eventMainFragment.setArguments(bundle);
 
         //ft.add(R.id.main_framelayout, eventsListFragment, "EventsListFragment");
@@ -208,7 +176,6 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Li
         ft.replace(R.id.main_framelayout, eventMainFragment,"EventMainFragment");
         ft.addToBackStack("EventMainFragment");
         ft.commit();
-
     }
 
     @Override
@@ -235,7 +202,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Li
         }
     }
 
-    private void showDialog(String eventName, String userPos, final String eventKey, final int position){
+    private void showDialog(String eventName, final String eventKey, final int position, String userPos){
         MainActivity mainActivity = (MainActivity) context;
         LayoutInflater inflater = mainActivity.getLayoutInflater();
         final View view2 = inflater.inflate(R.layout.dialog_events_options, null);
@@ -253,12 +220,12 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Li
         ImageView editLine  = view2.findViewById(R.id.dgEventSettings_lineEditName);
         title.setText(eventName);
 
+        reports.setVisibility(View.GONE);
+        reportsLine.setVisibility(View.GONE);
         if(userPos.equals("Member")){
-            reports.setVisibility(View.GONE);
             delete.setVisibility(View.GONE);
             edit.setVisibility(View.GONE);
             membersLine.setVisibility(View.GONE);
-            reportsLine.setVisibility(View.GONE);
             editLine.setVisibility(View.GONE);
         }
 
@@ -269,7 +236,29 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Li
             }
         });
 
+        viewMembers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                changeFragment(new MembersFragment(),eventKey,String.valueOf(position));
+                optionsDialog.dismiss();
+            }
+        });
+
         optionsDialog.show();
+    }
+
+    private void changeFragment(Fragment fragment, String key, String userPosition){
+        MainActivity mainActivity = (MainActivity) context;
+        Bundle bundle = new Bundle();
+        bundle.putString("eventKey",key);
+        bundle.putString("userPosition",userPosition);
+        fragment.setArguments(bundle);
+
+        FragmentTransaction ft = mainActivity.getSupportFragmentManager().beginTransaction();
+        ft.setCustomAnimations(R.anim.enter_anim,R.anim.stay_anim,R.anim.stay_anim,R.anim.exit_anim);
+        ft.replace(R.id.main_framelayout, fragment, key);
+        ft.addToBackStack(key);
+        ft.commit();
     }
 
     private void deleteEvent(final String eventKey, final int position, AlertDialog dg){

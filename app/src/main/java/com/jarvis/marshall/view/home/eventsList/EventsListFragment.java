@@ -25,6 +25,8 @@ import com.jarvis.marshall.model.Event;
 import com.jarvis.marshall.view.home.createEvent.CreateEventActivity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -109,7 +111,7 @@ public class EventsListFragment extends Fragment {
                 if(dataSnapshot.getValue()!= null){
                     int num = 1;
                     String date=null, description=null, endTime=null, groupKey=null, key=null, name=null, startTime=null,status=null,venue=null;
-                    ArrayList<String> eventMembers = new ArrayList<>();
+                    Map eventMembers = new HashMap();
                     for(DataSnapshot ds: dataSnapshot.getChildren()){
                         switch (num) {
                             case (1):
@@ -123,7 +125,7 @@ public class EventsListFragment extends Fragment {
                                 break;
                             case (4):
                                 for (DataSnapshot ds3 : ds.getChildren()) {
-                                    eventMembers.add(ds3.getKey() + ":" + ds3.getValue());
+                                    eventMembers.put(ds3.getKey(),ds3.getValue());
                                 }
                                 break;
                             case (5):
@@ -173,7 +175,7 @@ public class EventsListFragment extends Fragment {
                     if(temp.equals("")||!temp.equals(tempKey)){
                         int num = 1;
                         String date=null, description=null, endTime=null, groupKey=null, key=null, name=null, startTime=null,status=null,venue=null;
-                        ArrayList<String> eventMembers = new ArrayList<>();
+                        Map eventMembers = new HashMap();
                         for(DataSnapshot ds: dataSnapshot.getChildren()){
                             switch (num) {
                                 case (1):
@@ -187,7 +189,8 @@ public class EventsListFragment extends Fragment {
                                     break;
                                 case (4):
                                     for (DataSnapshot ds3 : ds.getChildren()) {
-                                        eventMembers.add(ds3.getKey() + ":" + ds3.getValue());
+                                        eventMembers.put(ds3.getKey(),ds3.getValue());
+
                                     }
                                     break;
                                 case (5):

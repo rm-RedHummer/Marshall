@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,6 +52,8 @@ public class TaskSelectMembersFragment extends Fragment implements View.OnClickL
         userDA = new UserDA();
         userKeyArrayList = new ArrayList<>();
         fm = getActivity().getSupportFragmentManager();
+
+
 
         recyclerView = view.findViewById(R.id.fragTaskSelectMember_recyclerView);
         recyclerView.setHasFixedSize(true);

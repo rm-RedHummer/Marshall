@@ -3,6 +3,8 @@ package com.jarvis.marshall.dataAccess;
 import com.google.firebase.database.Query;
 import com.jarvis.marshall.model.Event;
 
+import java.util.Map;
+
 /**
  * Created by Jarvis on 03/02/2018.
  */
@@ -11,7 +13,6 @@ public class EventDA extends  DA{
     private final String node = "event";
     public void createNewEvent(Event event){
         rootRef.child(node).child(event.getKey()).setValue(event);
-
     }
 
     public Query getAllEvents(String groupKey){
@@ -34,5 +35,8 @@ public class EventDA extends  DA{
         rootRef.child(node).child(eventKey).removeValue();
     }
 
+    public void setEventMembers(String eventKey, Map members){
+        rootRef.child(node).child(eventKey).child("eventMembers").setValue(members);
+    }
 
 }

@@ -32,6 +32,8 @@ import com.jarvis.marshall.view.home.eventsList.EventsListAdapter;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,7 +42,7 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
     private Button descriptionBtn,dateBtn,startTimeBtn,endTimeBtn,venueBtn,membersBtn,cancelBtn,saveBtn;
     private TextInputEditText eventNameEditText;
     private String groupKey="",eventName="",eventKey="",description="",date="",startTime="",endTime="",venue="",status,tag,eventLeaderUserKey="";
-    private ArrayList<String> eventMembersKey;
+    private ArrayList<String> eventMembersKey=null;
     private Integer rawStartHour, rawStartMinute,rawEndHour,rawEndMinute,rawYear,rawMonth,rawDay;
     private FirebaseAuth mAuth;
     private FragmentManager fm;
@@ -57,7 +59,49 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         dataBundle = getActivity().getIntent();
-        groupKey = dataBundle.getExtras().getString("groupKey");
+        if(dataBundle.getExtras().containsKey("groupKey"))
+            groupKey = dataBundle.getExtras().getString("groupKey");
+        if(dataBundle.getExtras().containsKey("eventArrayList")){
+            ArrayList<String> dataList = dataBundle.getExtras().getStringArrayList("eventArrayList");
+            ArrayList<String> eventMembersList = dataBundle.getExtras().getStringArrayList("membersList");
+            for(int ctr = 0; ctr < dataList.size(); ctr++){
+                switch (ctr){
+                    case(0):
+                        date = dataList.get(ctr);
+                        break;
+                    case(1):
+                        description = dataList.get(ctr);
+                        break;
+                    case(2):
+                        endTime = dataList.get(ctr);
+                        break;
+                    case(3):
+                        groupKey  = dataList.get(ctr);
+                        break;
+                    case(4):
+                        eventKey  = dataList.get(ctr);
+                        break;
+                    case(5):
+                        eventName = dataList.get(ctr);
+                        break;
+                    case(6):
+                        startTime = dataList.get(ctr);
+                        break;
+                    case(7):
+                        venue = dataList.get(ctr);
+                        break;
+                }
+            }
+            eventMembersKey = new ArrayList<>();
+            for(int ctr = 0; ctr < eventMembersList.size(); ctr ++){
+                String[] split = eventMembersList.get(ctr).split(":");
+                if(split[1].equals("Manager"))
+                    eventLeaderUserKey = split[0];
+                else
+                    eventMembersKey.add(split[0]);
+            }
+
+        }
         view = inflater.inflate(R.layout.fragment_create_event, container, false);
         mAuth = FirebaseAuth.getInstance();
         fm = getActivity().getSupportFragmentManager();
@@ -113,27 +157,35 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
             eventMembersKey = dataBundle.getExtras().getStringArrayList("eventMembersArrayList");
         if(!eventNameEditText.getText().toString().isEmpty())
             eventName = eventNameEditText.getText().toString();
+        else
+            eventName = "";
         if(eventName.equals("")||date.equals("")||startTime.equals("")||endTime.equals("")||venue.equals("")||description.equals("")
                 ||eventLeaderUserKey.equals("")) {
             AlertDialog.Builder dg = new AlertDialog.Builder(getContext());
             dg.setMessage("Please enter all required information.");
             dg.setPositiveButton("OK",null);
             dg.show();
-        } else {
-            final DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference().getRoot().child("event");
-            eventKey = rootRef.push().getKey();
+        }
+        else {
+
+
+            if(eventKey.equals("")){
+                final DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference().getRoot().child("event");
+                eventKey = rootRef.push().getKey();
+            }
             status = "On preparation";
             Event event = new Event(eventName,date,startTime,endTime,venue,description,status,eventKey,groupKey);
             EventDA eventDA = new EventDA();
-            eventDA.createNewEvent(event);
 
-
-            eventDA.addEventMember(eventKey,eventLeaderUserKey,"Manager");
-            if(dataBundle.getExtras().getStringArrayList("eventMembersArrayList")!=null){
+            Map members = new HashMap();
+            members.put(eventLeaderUserKey, "Manager");
+            if(eventMembersKey!=null){
                 for(int ctr = 0 ; ctr < eventMembersKey.size(); ctr++){
-                    eventDA.addEventMember(eventKey,eventMembersKey.get(ctr),"Member");
+                    members.put(eventMembersKey.get(ctr),"Member");
                 }
             }
+            event.setEventMembers(members);
+            eventDA.createNewEvent(event);
             back();
         }
     }
@@ -366,59 +418,85 @@ public class CreateEventFragment extends Fragment implements View.OnClickListene
         createEventActivity.overridePendingTransition(R.anim.stay_anim,R.anim.exit_anim);
     }
 
+    public void setDescription(){
+        if(description.equals("")){
+            descriptionBtn.setText("ENTER DESCRIPTION");
+        } else {
+            String displayDescription = null;
+            if (description.length() > 20)
+                displayDescription = description.substring(0, 20);
+            else
+                displayDescription = description;
+            descriptionBtn.setText(displayDescription);
+        }
+    }
+    public void setVenue(){
+        if(venue.equals("")){
+            venueBtn.setText("ENTER VENUE");
+        } else {
+            String displayVenue = null;
+            if(venue.length()>20)
+                displayVenue = venue.substring(0,20);
+            else
+                displayVenue = venue;
+            venueBtn.setText(displayVenue);
+        }
+    }
+    public void setDate(){
+        String[] dateSplit = date.split("/");
+        rawDay = Integer.valueOf(dateSplit[1]);
+        rawMonth = Integer.valueOf(dateSplit[0]);
+        rawYear = Integer.valueOf(dateSplit[2]);
+        dateBtn.setText(rawDay+"/"+(rawMonth+1)+"/"+rawYear);
+    }
+    public void setStartTime(){
+        String[] timeSplit = startTime.split(":");
+        rawStartHour = Integer.valueOf(timeSplit[0]);
+        rawStartMinute = Integer.valueOf(timeSplit[1]);
+        startTimeBtn.setText(processTime(startTime));
+    }
+    public void setEndTime(){
+        String[] timeSplit = endTime.split(":");
+        rawEndHour = Integer.valueOf(timeSplit[0]);
+        rawEndMinute = Integer.valueOf(timeSplit[1]);
+        endTimeBtn.setText(processTime(endTime));
+    }
+
 
     public void initializeDataToList(){
         if(dataBundle.getExtras().containsKey("description")){
             description = dataBundle.getExtras().getString("description");
-            if(description.equals("")){
-                descriptionBtn.setText("ENTER DESCRIPTION");
-            } else {
-                String displayDescription = null;
-                if (description.length() > 20)
-                    displayDescription = description.substring(0, 20);
-                else
-                    displayDescription = description;
-                descriptionBtn.setText(displayDescription);
-            }
-        }
+            setDescription();
+        } else if(!description.isEmpty())
+            setDescription();
+
         if(dataBundle.getExtras().containsKey("venue")){
             venue = dataBundle.getExtras().getString("venue");
-            if(venue.equals("")){
-                venueBtn.setText("ENTER VENUE");
-            } else {
-                String displayVenue = null;
-                if(venue.length()>20)
-                    displayVenue = venue.substring(0,20);
-                else
-                    displayVenue = venue;
-                venueBtn.setText(displayVenue);
-            }
-        }
+            setVenue();
+        } else if(!venue.isEmpty())
+            setVenue();
+
         if(dataBundle.getExtras().containsKey("date")){
             date = dataBundle.getExtras().getString("date");
-            String[] dateSplit = date.split("/");
-            rawDay = Integer.valueOf(dateSplit[1]);
-            rawMonth = Integer.valueOf(dateSplit[0]);
-            rawYear = Integer.valueOf(dateSplit[2]);
-            dateBtn.setText(rawDay+"/"+(rawMonth+1)+"/"+rawYear);
-        }
+            setDate();
+        } else if(!date.isEmpty())
+            setDate();
+
         if(dataBundle.getExtras().containsKey("startTime")){
             startTime = dataBundle.getExtras().getString("startTime");
-            String[] timeSplit = startTime.split(":");
-            rawStartHour = Integer.valueOf(timeSplit[0]);
-            rawStartMinute = Integer.valueOf(timeSplit[1]);
-            startTimeBtn.setText(processTime(startTime));
-        }
+            setStartTime();
+        } else if(!startTime.isEmpty())
+            setStartTime();
+
         if(dataBundle.getExtras().containsKey("endTime")){
             endTime = dataBundle.getExtras().getString("endTime");
-            String[] timeSplit = endTime.split(":");
-            rawEndHour = Integer.valueOf(timeSplit[0]);
-            rawEndMinute = Integer.valueOf(timeSplit[1]);
-            endTimeBtn.setText(processTime(endTime));
-        }
+            setEndTime();
+        } else if(!endTime.isEmpty())
+            setEndTime();
         if(dataBundle.getExtras().containsKey("eventName")){
             eventName = dataBundle.getExtras().getString("eventName");
             eventNameEditText.setText(eventName);
-        }
+        } else if(!eventName.isEmpty())
+            eventNameEditText.setText(eventName);
     }
 }

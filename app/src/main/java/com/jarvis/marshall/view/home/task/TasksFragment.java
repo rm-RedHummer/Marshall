@@ -31,7 +31,7 @@ import java.util.Map;
 public class TasksFragment extends Fragment {
     private View view;
     private RecyclerView recyclerView;
-    private String eventKey;
+    private String eventKey,userPosition;
     public TasksFragment() {
         // Required empty public constructor
     }
@@ -46,7 +46,9 @@ public class TasksFragment extends Fragment {
         Bundle bundle = getArguments();
         if(bundle!=null){
             eventKey = bundle.getString("eventKey");
+            userPosition = bundle.getString("userPosition");
         }
+
 
 
 
@@ -58,6 +60,8 @@ public class TasksFragment extends Fragment {
         loadTasksRecyclerView();
 
         FloatingActionButton fab = view.findViewById(R.id.fragment_tasks_fab);
+        if(userPosition.equals("None")||userPosition.equals("Member"))
+            fab.setVisibility(View.GONE);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -65,12 +69,13 @@ public class TasksFragment extends Fragment {
             }
         });
 
+
         return view;
     }
 
     private void loadTasksRecyclerView(){
         final ArrayList<Task> taskArrayList = new ArrayList<>();
-        final TaskAdapter adapter = new TaskAdapter(getContext(),taskArrayList);
+        final TaskAdapter adapter = new TaskAdapter(getContext(),taskArrayList,userPosition);
         recyclerView.setAdapter(adapter);
         TaskDA taskDA = new TaskDA();
 
@@ -126,15 +131,11 @@ public class TasksFragment extends Fragment {
             }
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                AlertDialog.Builder dg = new AlertDialog.Builder(getContext());
-                dg.setMessage("change");
-                dg.show();
+
             }
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                AlertDialog.Builder dg = new AlertDialog.Builder(getContext());
-                dg.setMessage("remove");
-                dg.show();
+
             }
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {

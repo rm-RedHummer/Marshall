@@ -26,7 +26,7 @@ import butterknife.ButterKnife;
 public class EventMainFragment extends Fragment {
     private View view;
     private Adapter adapter;
-    private String eventKey;
+    private String eventKey,userPosition;
     private FloatingActionButton fab;
 
     public EventMainFragment() {
@@ -40,6 +40,7 @@ public class EventMainFragment extends Fragment {
         Bundle bundle = getArguments();
         if(bundle!=null){
             eventKey = bundle.getString("eventKey");
+            userPosition = bundle.getString("userPosition");
         }
 
         view = inflater.inflate(R.layout.fragment_event_main, container, false);
@@ -63,6 +64,7 @@ public class EventMainFragment extends Fragment {
     public void addFragment(Fragment fragment, String title, Adapter adapter){
         Bundle bundle = new Bundle();
         bundle.putString("eventKey",eventKey);
+        bundle.putString("userPosition",userPosition);
         fragment.setArguments(bundle);
         adapter.addFragment(fragment, title);
     }

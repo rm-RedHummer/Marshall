@@ -53,4 +53,8 @@ public class GroupDA extends DA{
         return rootRef.child(node).child(groupKey).child("groupMembers");
     }
 
+    public void changeGroupName(String groupKey, String name){
+        rootRef.child(node).child(groupKey).child("groupName").setValue(name);
+    }
+
 }
