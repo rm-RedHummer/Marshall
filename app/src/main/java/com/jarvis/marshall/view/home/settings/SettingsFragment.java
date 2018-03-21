@@ -1,22 +1,36 @@
 package com.jarvis.marshall.view.home.settings;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.drawable.RippleDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.jarvis.marshall.MainActivity;
 import com.jarvis.marshall.R;
-
-import butterknife.ButterKnife;
-
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -24,8 +38,11 @@ public class SettingsFragment extends Fragment implements View.OnClickListener
 {
     private View view;
     private Button fullnameBtn, passwordBtn, emailBtn;
-    private String fullname,password,email;
+    private TextView name;
+    private String fullname,password, newPass, email;
     private FirebaseAuth mAuth;
+    ProgressDialog pd;
+    Task task;
 
     public SettingsFragment()
     {
@@ -34,14 +51,16 @@ public class SettingsFragment extends Fragment implements View.OnClickListener
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {// Inflate the layout for this fragment
-
+    {
         mAuth = FirebaseAuth.getInstance();
         view = inflater.inflate(R.layout.fragment_settings, container, false);
         FragmentManager fm = getActivity().getSupportFragmentManager();
         String tag = fm.getBackStackEntryAt(fm.getBackStackEntryCount() - 1).getName();
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
         toolbar.setTitle("Settings");
+
+        name = view.findViewById(R.id.fragmentSettings_userName);
+        name.setText(mAuth.getCurrentUser().getDisplayName());
 
         fullnameBtn = view.findViewById(R.id.settings_changeNameBtn);
         passwordBtn = view.findViewById(R.id.settings_changePasswordBtn);
@@ -68,10 +87,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener
                 emailDialog();
             }
         });
-
         return view;
     }
-
     public void fullnameDialog() {
         LayoutInflater inflater = getLayoutInflater();
         final View view2 = inflater.inflate(R.layout.dialog_fullname_settings, null);
@@ -86,24 +103,21 @@ public class SettingsFragment extends Fragment implements View.OnClickListener
             public void onShow(DialogInterface dialogInterface) {
                 Button b = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
                 b.setOnClickListener(new View.OnClickListener() {
-                    // if (!fullnameBtn.getText().toString().equals("CHANGE FULLNAME")) {
-                    //fullnameEditText.setText(fullname);
                     @Override
                     public void onClick(View view) {
                         final EditText fullnameEditText = view2.findViewById(R.id.dgSettings_Fullname);
                         fullname = fullnameEditText.getText().toString();
+                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                .setDisplayName(fullname).build();
+                        firebaseUser.updateProfile(profileUpdates);
+                        name.setText(fullname);
+                        NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
+                        View header = navigationView.getHeaderView(0);
+                        TextView nameTV = header.findViewById(R.id.nav_header_name);
+                        name.setText(fullname);
+                        dialog.dismiss();
                     }
-                       /* if (fullname.equals("")) {
-                            fullnameBtn.setText("ENTER DESCRIPTION");
-                        } else {
-                            String displayDescription = null;
-                            if (fullname.length() > 25)
-                                displayDescription = fullname.substring(0, 25);
-                            else
-                                displayDescription = fullname;
-                            fullnameBtn.setText(displayDescription);
-                        }
-                        dialog.dismiss();*/
                 });
             }
         });
@@ -120,42 +134,51 @@ public class SettingsFragment extends Fragment implements View.OnClickListener
                 .setPositiveButton("Confirm", null) //Set to null. We override the onclick
                 .setNegativeButton("Cancel", null)
                 .create();
-        /*if(!passwordBtn.getText().toString().equals("ENTER PASSWORD"))
-        {
-            //    passwordEditText.setText(description);
-        }*/
         dialog.setOnShowListener(new DialogInterface.OnShowListener()
         {
-            @Override
             public void onShow(DialogInterface dialogInterface)
             {
                 Button b = ((AlertDialog)dialog).getButton(AlertDialog.BUTTON_POSITIVE);
-                b.setOnClickListener(new View.OnClickListener()
-                {
-                    @Override
+                b.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View view) {
-                        final EditText passwordEditText = view2.findViewById(R.id.dgPassword_settings);
+                        EditText passwordEditText = view2.findViewById(R.id.dgPassword_settings);
+                        EditText oldPass = view2.findViewById(R.id.dgPassword_oldPassword);
                         password = passwordEditText.getText().toString();
-                    }
-                        /*if(description.equals(""))
-                        {
-                            descriptionBtn.setText("ENTER DESCRIPTION");
-                        } else
-                        {
-                            String displayDescription = null;
-                            if (description.length() > 25)
-                                displayDescription = description.substring(0, 25);
-                            else
-                                displayDescription = description;
-                            descriptionBtn.setText(displayDescription);
+                        final FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                        if(firebaseUser != null) {
+                            AuthCredential credential = EmailAuthProvider
+                                    .getCredential(mAuth.getCurrentUser().getEmail(), oldPass.getText().toString());
+                            mAuth.getCurrentUser().updatePassword(password);
+
+                            /*firebaseUser.reauthenticate(credential)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                firebaseUser.updatePassword(newPass).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (task.isSuccessful()) {
+                                                            Toast.makeText(getActivity(), "Password successfully changed", Toast.LENGTH_LONG);
+
+                                                        } else {
+                                                            Toast.makeText(getActivity(), "Failed to change password", Toast.LENGTH_LONG);
+                                                        }
+                                                    }
+                                                });
+                                            } else {
+                                                Toast.makeText(getActivity(), "Failed to change password", Toast.LENGTH_LONG);
+                                            }
+                                        }
+
+                                    });*/
                         }
-                        dialog.dismiss();*/
+                    }
                 });
             }
         });
         dialog.show();
     }
-
     public void emailDialog()
     {
         LayoutInflater inflater = getLayoutInflater();
@@ -166,10 +189,6 @@ public class SettingsFragment extends Fragment implements View.OnClickListener
                 .setPositiveButton("Confirm", null) //Set to null. We override the onclick
                 .setNegativeButton("Cancel", null)
                 .create();
-       /* if(!emailBtn.getText().toString().equals("ENTER EMAIL"))
-        {
-            //    emailEditText.setText(description);
-        }*/
         dialog.setOnShowListener(new DialogInterface.OnShowListener()
         {
             @Override
@@ -183,19 +202,16 @@ public class SettingsFragment extends Fragment implements View.OnClickListener
                     {
                         final EditText emailEditText = view2.findViewById(R.id.dgSettings_email);
                         email = emailEditText.getText().toString();
-                        /*if(description.equals(""))
-                        {
-                            descriptionBtn.setText("ENTER DESCRIPTION");
-                        } else
-                        {
-                            String displayDescription = null;
-                            if (description.length() > 25)
-                                displayDescription = description.substring(0, 25);
-                            else
-                                displayDescription = description;
-                            descriptionBtn.setText(displayDescription);
+                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                        if(firebaseUser != null) {
+                            firebaseUser.updateEmail(email);
+                            dialog.dismiss();
+
+                            NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
+                            View header = navigationView.getHeaderView(0);
+                            TextView emailTV = header.findViewById(R.id.nav_header_email);
+                            emailTV.setText(email);
                         }
-                        dialog.dismiss();*/
                     }
                 });
             }

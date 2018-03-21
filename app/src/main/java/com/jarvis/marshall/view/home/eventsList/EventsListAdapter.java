@@ -195,10 +195,10 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Li
             startTime = itemView.findViewById(R.id.vh_event_startTime);
             endTime = itemView.findViewById(R.id.vh_event_endTime);
             userPosition = itemView.findViewById(R.id.vh_event_userStatus);
-            progress = itemView.findViewById(R.id.vh_event_progress);
             check = itemView.findViewById(R.id.vh_event_checkImage);
             swipeRevealLayout = itemView.findViewById(R.id.vh_events_list_swipe_reveal_layout);
-            layout = itemView.findViewById(R.id.vh_events_list_constraint);
+            layout = itemView.findViewById(R.id.vh_e
+                    vents_list_constraint);
         }
     }
 
