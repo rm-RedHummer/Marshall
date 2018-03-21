@@ -197,8 +197,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Li
             userPosition = itemView.findViewById(R.id.vh_event_userStatus);
             check = itemView.findViewById(R.id.vh_event_checkImage);
             swipeRevealLayout = itemView.findViewById(R.id.vh_events_list_swipe_reveal_layout);
-            layout = itemView.findViewById(R.id.vh_e
-                    vents_list_constraint);
+            layout = itemView.findViewById(R.id.vh_events_list_constraint);
         }
     }
 
