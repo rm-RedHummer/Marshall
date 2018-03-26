@@ -11,6 +11,21 @@
         android:iconTintMode="multiply"
         android:title="Groups" />
     <item
+        android:id="@+id/reports"
+        android:title="Reports">
+        <menu>
+            <item
+                android:id="@+id/nav_monthly"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="Monthly" />
+            <item
+                android:id="@+id/nav_individual"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="Individual" />
+        </menu>
+
+    </item>
+    <item
         android:id="@+id/account"
         android:title="Account">
         <menu>

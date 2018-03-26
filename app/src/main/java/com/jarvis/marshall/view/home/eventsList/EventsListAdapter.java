@@ -3,12 +3,14 @@ package com.jarvis.marshall.view.home.eventsList;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -158,6 +160,18 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Li
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+
+        final int  width = Resources.getSystem().getDisplayMetrics().widthPixels;
+        holder.layout.post(new Runnable() {
+            @Override
+            public void run() {
+                int height = holder.layout.getHeight();
+
+                ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(width,height);
+                holder.layout.setLayoutParams(layoutParams);
+                //holder.constraintLayout.setMinWidth(width);
+            }
+        });
         progressDialog.dismiss();
     }
 
@@ -255,8 +269,8 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Li
 
         FragmentTransaction ft = mainActivity.getSupportFragmentManager().beginTransaction();
         ft.setCustomAnimations(R.anim.enter_anim,R.anim.stay_anim,R.anim.stay_anim,R.anim.exit_anim);
-        ft.replace(R.id.main_framelayout, fragment, key);
-        ft.addToBackStack(key);
+        ft.replace(R.id.main_framelayout, fragment, "EventDetails");
+        ft.addToBackStack("EventDetails");
         ft.commit();
     }
 

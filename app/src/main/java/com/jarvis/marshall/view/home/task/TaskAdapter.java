@@ -5,8 +5,10 @@ import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -129,6 +131,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListHolder> {
         FloatingActionButton fabEdit = view2.findViewById(R.id.dgTask_fabEdit);
         FloatingActionButton fabDelete = view2.findViewById(R.id.dgTask_fabDelete);
         FloatingActionButton fabDone = view2.findViewById(R.id.dgTask_fabDone);
+        FloatingActionButton fabMembers = view2.findViewById(R.id.dgTask_fabViewMembers);
         CardView lowerCardView = view2.findViewById(R.id.cardView2);
 
         if(userPosition.equals("None")||userPosition.equals("Member"))
@@ -187,6 +190,24 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ListHolder> {
                         .create();
 
                 dialog.show();
+            }
+        });
+
+        fabMembers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MainActivity mainActivity = (MainActivity) context;
+                MembersFragment fragment = new MembersFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("taskKey",task.getKey());
+                fragment.setArguments(bundle);
+
+                FragmentTransaction ft = mainActivity.getSupportFragmentManager().beginTransaction();
+                ft.setCustomAnimations(R.anim.enter_anim,R.anim.stay_anim,R.anim.stay_anim,R.anim.exit_anim);
+                ft.replace(R.id.main_framelayout, fragment, "TaskMembers");
+                ft.addToBackStack("TaskMembers");
+                ft.commit();
+                optionsDialog.dismiss();
             }
         });
 

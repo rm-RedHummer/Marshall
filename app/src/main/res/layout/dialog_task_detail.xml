@@ -156,18 +156,31 @@
                 android:id="@+id/dgTask_fabDelete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp"
                 android:clickable="true"
                 android:tint="@android:color/white"
                 app:backgroundTint="@color/material_red_800"
                 app:fabSize="normal"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/dgTask_fabDone"
+                app:layout_constraintEnd_toStartOf="@+id/dgTask_fabViewMembers"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/dgTask_fabEdit"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_delete_black_20dp" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/dgTask_fabViewMembers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:clickable="true"
+                android:tint="@android:color/white"
+                app:backgroundTint="@color/material_blue_900"
+                app:fabSize="normal"
+                app:layout_constraintEnd_toStartOf="@+id/dgTask_fabDone"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/dgTask_fabDelete"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_group_black_24dp" />
 
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/dgTask_fabDone"
@@ -180,7 +193,7 @@
                 app:fabSize="normal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/dgTask_fabDelete"
+                app:layout_constraintStart_toEndOf="@+id/dgTask_fabViewMembers"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_check_black_48dp" />
 
@@ -188,11 +201,13 @@
                 android:id="@+id/dgTask_fabEdit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp"
                 android:clickable="true"
                 android:tint="@android:color/white"
                 app:backgroundTint="@color/material_orange_800"
                 app:fabSize="normal"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/dgTask_fabDelete"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"

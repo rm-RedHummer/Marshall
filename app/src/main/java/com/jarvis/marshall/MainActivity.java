@@ -31,6 +31,8 @@ import com.jarvis.marshall.model.Group;
 import com.jarvis.marshall.model.User;
 import com.jarvis.marshall.view.home.HomeAdapter;
 import com.jarvis.marshall.view.home.groups.HomeFragment;
+import com.jarvis.marshall.view.home.reports.GroupReportFragment;
+import com.jarvis.marshall.view.home.reports.MonthlyReportFragment;
 import com.jarvis.marshall.view.home.settings.SettingsFragment;
 
 
@@ -105,10 +107,13 @@ public class MainActivity extends AppCompatActivity
             dg.show();
         } else if(fm.getBackStackEntryCount()==2 && !tag.equals("Edit_Settings")){
             fm.popBackStack();
-        } else if(fm.getBackStackEntryCount()==3){
+        } else if(fm.getBackStackEntryCount()>2){
+            fm.popBackStack();
+        } else if(tag.equals("TaskMembers")){
+            fm.popBackStack();
+        } else if(tag.equals("EventDetails")){
             fm.popBackStack();
         }
-
     }
 
     @Override
@@ -144,6 +149,10 @@ public class MainActivity extends AppCompatActivity
             fm.popBackStack("GroupListFragment",0);
         } else if (id == R.id.nav_settings) {
             changeFragment(new SettingsFragment(), "");
+        } else if( id == R.id.nav_monthly){
+            changeFragment(new MonthlyReportFragment(), "");
+        } else if( id == R.id.nav_individual){
+            changeFragment(new GroupReportFragment(), "GroupReportFragment");
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

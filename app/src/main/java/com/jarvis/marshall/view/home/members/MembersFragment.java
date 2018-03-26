@@ -14,9 +14,11 @@ import android.view.ViewGroup;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.jarvis.marshall.R;
 import com.jarvis.marshall.dataAccess.EventDA;
 import com.jarvis.marshall.dataAccess.GroupDA;
+import com.jarvis.marshall.dataAccess.TaskDA;
 
 import java.util.ArrayList;
 
@@ -27,7 +29,7 @@ public class MembersFragment extends Fragment {
     private View view;
     private RecyclerView recyclerView;
     private GroupDA groupDA;
-    private String groupKey="",eventKey;
+    private String groupKey="",eventKey="",taskKey="";
 
     public MembersFragment() {
         // Required empty public constructor
@@ -44,8 +46,10 @@ public class MembersFragment extends Fragment {
         if(bundle!=null){
             if(bundle.containsKey("groupKey"))
                 groupKey = bundle.getString("groupKey");
-            else
+            else if(bundle.containsKey("eventKey"))
                 eventKey = bundle.getString("eventKey");
+            else if(bundle.containsKey("taskKey"))
+                taskKey = bundle.getString("taskKey");
         }
 
         recyclerView = view.findViewById(R.id.fragMembers_recyclerView);
@@ -57,8 +61,10 @@ public class MembersFragment extends Fragment {
         toolbar.setTitle("Members");
         if(!groupKey.equals(""))
             loadGroupRecyclerView();
-        else
+        else if(!eventKey.equals(""))
             loadEventRecyclerView();
+        else if(!taskKey.equals(""))
+            loadTaskRecyclerView();
 
         return view;
     }
@@ -121,6 +127,32 @@ public class MembersFragment extends Fragment {
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+    private void loadTaskRecyclerView(){
+        final ArrayList<String> membersKeyList = new ArrayList<>();
+        final ArrayList<String> membersPositionList = new ArrayList<>();
+        final MembersAdapter adapter = new MembersAdapter(getContext(),membersKeyList,membersPositionList);
+        recyclerView.setAdapter(adapter);
+
+        TaskDA taskDA = new TaskDA();
+        taskDA.getTaskMembers(taskKey).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue()!=null){
+                    for(DataSnapshot dataSnapshot1: dataSnapshot.getChildren()) {
+                        membersKeyList.add(dataSnapshot1.getKey());
+                        membersPositionList.add(dataSnapshot1.getValue().toString());
+                        adapter.notifyItemInserted(membersPositionList.size() - 1);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         });
     }

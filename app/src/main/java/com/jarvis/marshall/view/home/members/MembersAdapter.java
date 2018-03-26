@@ -42,18 +42,25 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.ListHold
 
     @Override
     public void onBindViewHolder(final ListHolder holder, int position) {
-        userDA.getUserName(membersKey.get(position)).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                holder.name.setText(dataSnapshot.getValue().toString());
-            }
+        String pos = membersPosition.get(0);
+        if(!pos.equals("Member")&&!pos.equals("Admin")&&!pos.equals("Manager")){
+            holder.name.setText(membersPosition.get(position));
+            holder.position.setText("");
+        } else {
+            userDA.getUserName(membersKey.get(position)).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    holder.name.setText(dataSnapshot.getValue().toString());
+                }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
-        holder.position.setText(membersPosition.get(position));
+                }
+            });
+            holder.position.setText(membersPosition.get(position));
+        }
+
     }
 
     @Override
