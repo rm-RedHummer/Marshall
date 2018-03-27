@@ -63,7 +63,7 @@ public class DetailsFragment extends Fragment {
                 for(DataSnapshot dataSnapshot: ds.getChildren()){
                     if(dataSnapshot.getKey().equals("date")){
                         dataList.add(dataSnapshot.getValue().toString());
-                        date.setText(dataSnapshot.getValue().toString());
+                        date.setText(processDate(dataSnapshot.getValue().toString()));
                     } else if(dataSnapshot.getKey().equals("description")){
                         dataList.add(dataSnapshot.getValue().toString());
                         description.setText(dataSnapshot.getValue().toString());
@@ -85,7 +85,7 @@ public class DetailsFragment extends Fragment {
                         toolbar.setTitle(dataSnapshot.getValue().toString());
                     } else if(dataSnapshot.getKey().equals("startTime")){
                         dataList.add(dataSnapshot.getValue().toString());
-                        time.setText(dataSnapshot.getValue().toString()+" - "+tempTime);
+                        time.setText(processTime(dataSnapshot.getValue().toString())+" - "+processTime(tempTime));
                     } else if(dataSnapshot.getKey().equals("venue")){
                         dataList.add(dataSnapshot.getValue().toString());
                         venue.setText(dataSnapshot.getValue().toString());
@@ -129,6 +129,38 @@ public class DetailsFragment extends Fragment {
         intent.putExtra("membersList",membersList);
         startActivity(intent);
         getActivity().overridePendingTransition(R.anim.enter_anim,R.anim.stay_anim);
+    }
+
+    private String processDate(String date){
+        String newDate="";
+        String[] splitDate = date.split("/");
+        String[] month = {"Jan","Feb","March","April","May","June","July","Aug","Sept","Oct","Nov","Dec"};
+        for(int i = 0; i <12; i++){
+            if(splitDate[0].equals(String.valueOf(i)))
+                newDate = month[i]+" "+splitDate[1]+", "+"20"+splitDate[2].substring(splitDate[2].length()-2);
+        }
+        return newDate;
+    }
+
+    private String processTime(String time){
+        String newTime="",postTime;
+        String[] timeArray = time.split(":");
+        int hour = Integer.parseInt(timeArray[0]);
+        int minute  = Integer.parseInt(timeArray[1]);
+        if(hour >11)
+            postTime = "pm";
+        else
+            postTime = "am";
+
+        if(hour>12){
+            hour = hour - 12;
+        } else if(hour == 0)
+            hour = 12;
+
+        if(minute<10)
+            timeArray[1] = "0"+timeArray[1];
+        newTime = String.valueOf(hour)+":"+timeArray[1]+postTime;
+        return newTime;
     }
 
 }

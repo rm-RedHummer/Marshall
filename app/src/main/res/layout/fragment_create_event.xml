@@ -19,32 +19,10 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@color/colorPrimary" />
+            app:srcCompat="@color/colorPrimary"
+            />
 
-        <android.support.design.widget.TextInputLayout
-            style="@style/TextLabel"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="32dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="24dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
 
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/actCreateEvent_eventName"
-                style="@style/TextLabel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:defaultFocusHighlightEnabled="false"
-                android:focusedByDefault="false"
-                android:hint="Event Name"
-                android:inputType="textPersonName"
-                android:textColor="@color/cardview_light_background"
-                android:textColorHighlight="@color/cardview_light_background"
-                android:textColorHint="@android:color/white" />
-        </android.support.design.widget.TextInputLayout>
 
         <TextView
             android:id="@+id/textView6"
@@ -54,6 +32,7 @@
             android:layout_marginTop="20dp"
             android:text="Description"
             android:textColor="@android:color/black"
+
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
@@ -323,6 +302,24 @@
             app:layout_constraintTop_toBottomOf="@+id/divider5"
             app:layout_constraintVertical_bias="0.0"
             tools:ignore="NewApi" />
+
+        <EditText
+            android:id="@+id/actCreateEvent_eventName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@android:color/white"
+            android:ems="10"
+            android:hint="Event Name"
+            android:inputType="textCapWords"
+            android:textColor="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

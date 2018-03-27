@@ -40,7 +40,7 @@ import java.util.Map;
  */
 public class CreateEventFragment extends Fragment implements View.OnClickListener{
     private Button descriptionBtn,dateBtn,startTimeBtn,endTimeBtn,venueBtn,membersBtn,cancelBtn,saveBtn;
-    private TextInputEditText eventNameEditText;
+    private EditText eventNameEditText;
     private String groupKey="",eventName="",eventKey="",description="",date="",startTime="",endTime="",venue="",status,tag,eventLeaderUserKey="";
     private ArrayList<String> eventMembersKey=null;
     private Integer rawStartHour, rawStartMinute,rawEndHour,rawEndMinute,rawYear,rawMonth,rawDay;

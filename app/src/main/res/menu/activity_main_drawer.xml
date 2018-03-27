@@ -16,11 +16,11 @@
         <menu>
             <item
                 android:id="@+id/nav_monthly"
-                android:icon="@drawable/ic_menu_manage"
+                android:icon="@drawable/ic_perm_contact_calendar_black_24dp"
                 android:title="Monthly" />
             <item
                 android:id="@+id/nav_individual"
-                android:icon="@drawable/ic_menu_manage"
+                android:icon="@drawable/ic_person_black_24dp"
                 android:title="Individual" />
         </menu>
 

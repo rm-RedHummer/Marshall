@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout5"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/vhUserReport_eventName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        android:text="HCI Defense"
+        android:textColor="@color/material_grey_800"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/vhUserReport_check" />
+
+    <TextView
+        android:id="@+id/vhUserReport_taskName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="2dp"
+        android:text="Finish Settings"
+        app:layout_constraintBottom_toBottomOf="@+id/vhUserReport_status"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/vhUserReport_eventName" />
+
+    <TextView
+        android:id="@+id/vhUserReport_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Task Done"
+        app:layout_constraintEnd_toEndOf="@+id/vhUserReport_check"
+        app:layout_constraintStart_toStartOf="@+id/vhUserReport_check"
+        app:layout_constraintTop_toBottomOf="@+id/vhUserReport_check" />
+
+    <ImageView
+        android:id="@+id/vhUserReport_check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="2dp"
+        android:tint="@color/material_grey_400"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_check_circle_black_48dp" />
+
+    <ImageView
+        android:id="@+id/imageView17"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/vhUserReport_status"
+        app:srcCompat="@color/material_grey_200" />
+</android.support.constraint.ConstraintLayout>

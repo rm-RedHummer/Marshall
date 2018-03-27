@@ -117,7 +117,8 @@ public class MonthlyReportAdapter extends RecyclerView.Adapter<MonthlyReportAdap
                                                         holder.total.setText(String.valueOf(taskArrayList.size()));
                                                         Integer total = taskArrayList.size(), finished = Integer.parseInt(holder.finished.getText().toString());
                                                         Double percent = (finished.doubleValue()/total.doubleValue())*100;
-                                                        holder.percent.setText(String.valueOf(percent)+"%");
+                                                        Integer intPercent = percent.intValue();
+                                                        holder.percent.setText(String.valueOf(intPercent)+"%");
                                                         break;
                                                 }
                                                 if (num <= 9)
